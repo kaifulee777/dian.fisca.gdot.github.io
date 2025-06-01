@@ -3,684 +3,544 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Término de Firmeza Tributaria (Colombia)</title>
+    <title>DIAN Girardot - Portal de Auditores de Fiscalización</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Ensure date-fns is loaded. The 'defer' attribute can help ensure it's parsed
-         but might interact with scripts expecting it to be immediately available.
-         However, standard scripts in head block rendering until fetched and executed. -->
-    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Styles remain the same */
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Un gris claro para el fondo general */
         }
-        .form-section {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            margin-bottom: 1.5rem;
+        .header-gradient {
+            background: linear-gradient(to right, #00529b, #00305c); /* Azul DIAN */
         }
-        .form-section h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 0.5rem;
+        .section-title {
+            border-bottom: 3px solid #00529b; /* Azul DIAN */
+            padding-bottom: 8px;
+            display: inline-block;
         }
-        .form-input, .form-select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            margin-top: 0.25rem;
-            box-shadow: inset 0 1px 2px 0 rgba(0,0,0,0.05);
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden; /* Para que el borde animado no se salga */
         }
-        .form-label {
-            font-weight: 500;
-            color: #374151;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
-        .conditional-field {
-            margin-left: 1rem;
-            padding-left: 1rem;
-            border-left: 2px solid #e5e7eb;
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
+        .card-icon {
+            font-size: 2.5rem; /* 40px */
+            color: #00529b; /* Azul DIAN */
+            transition: color 0.3s ease;
         }
-        #resultadoContainer {
-            background-color: #f9fafb; 
-            border: 1px solid #e5e7eb; 
-            border-radius: 0.5rem; 
-            padding: 1.5rem; 
-            margin-top: 2rem; 
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); 
+        .card:hover .card-icon {
+            color: #fdb913; /* Amarillo DIAN */
         }
-        #resultadoContainer h3 {
-            font-size: 1.125rem; 
-            font-weight: 600; 
-            color: #1f2937; 
-            margin-bottom: 1rem; 
+        .interactive-list-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb; /* gris claro */
+            transition: background-color 0.2s ease;
+            cursor: pointer;
         }
-        #resultadoTexto {
-            font-size: 0.95rem; 
-            color: #374151; 
-            line-height: 1.6; 
-            white-space: pre-wrap; 
+        .interactive-list-item:last-child {
+            border-bottom: none;
+        }
+        .interactive-list-item:hover {
+            background-color: #e9eff5; /* Un azul muy claro */
+        }
+        .interactive-list-item i {
+            margin-right: 10px;
+            color: #00529b; /* Azul DIAN */
         }
         .btn-primary {
-            background-color: #2563eb;
+            background-color: #00529b; /* Azul DIAN */
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.375rem;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
             font-weight: 500;
-            transition: background-color 0.3s;
         }
         .btn-primary:hover {
-            background-color: #1d4ed8;
+            background-color: #00305c; /* Azul DIAN más oscuro */
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #fdb913; /* Amarillo DIAN */
+            color: #00305c; /* Azul DIAN oscuro para contraste */
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+        }
+        .btn-secondary:hover {
+            background-color: #e0a000; /* Amarillo DIAN más oscuro */
+            transform: translateY(-2px);
+        }
+        .search-bar {
+            position: relative;
+        }
+        .search-bar input {
+            padding-left: 2.5rem; /* Para el ícono */
+        }
+        .search-bar .fa-search {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af; /* gris */
+        }
+        /* Animación para la aparición de secciones */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Estilos para el menú desplegable (si se implementa con JS) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {background-color: #f1f1f1}
+        .dropdown:hover .dropdown-content {
+            display: block;
         }
     </style>
 </head>
-<body class="bg-gray-100 p-4 md:p-8">
-    <div class="max-w-3xl mx-auto">
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-bold text-gray-800">Calculadora de Término de Firmeza Tributaria</h1>
-            <p class="text-gray-600 mt-2">Sistema para determinar la fecha de vencimiento de un expediente según la normativa colombiana.</p>
-        </header>
+<body class="text-gray-800">
 
-        <form id="calculadoraForm">
-            <div class="form-section">
-                <h2>1. Información General de la Declaración</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="fechaVencimientoPlazoDeclarar" class="form-label">Fecha de Vencimiento del Plazo para Declarar:</label>
-                        <input type="date" id="fechaVencimientoPlazoDeclarar" class="form-input">
-                    </div>
-                    <div>
-                        <label for="fechaPresentacionDeclaracion" class="form-label">Fecha de Presentación de la Declaración (*):</label>
-                        <input type="date" id="fechaPresentacionDeclaracion" class="form-input" required>
-                    </div>
-                </div>
-                 <div class="mt-4">
-                    <label for="tipoImpuesto" class="form-label">Tipo de Impuesto:</label>
-                    <select id="tipoImpuesto" class="form-select">
-                        <option value="renta">Renta</option>
-                        <option value="iva">IVA</option>
-                        <option value="retencion">Retención en la Fuente</option>
-                        <option value="otro">Otro</option>
-                    </select>
-                </div>
-                <div class="mt-4">
-                    <input type="checkbox" id="declaracionCorregida" name="declaracionCorregida" onchange="toggleConditionalField('declaracionCorregida', 'correccionFields')">
-                    <label for="declaracionCorregida" class="form-label ml-2">¿Es una corrección de una declaración anterior?</label>
-                    <div id="correccionFields" class="conditional-field hidden mt-2">
-                        <label for="fechaCorreccion" class="form-label">Fecha de la Corrección:</label>
-                        <input type="date" id="fechaCorreccion" class="form-input">
-                    </div>
-                </div>
+    <header class="header-gradient text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://placehold.co/150x40/ffffff/00529b?text=Logo+DIAN" alt="Logo DIAN" class="h-10 mr-3 rounded">
+                <h1 class="text-xl md:text-2xl font-bold">Portal Auditores - Fiscalización Girardot</h1>
             </div>
-
-            <div class="form-section">
-                <h2>2. Características Especiales</h2>
-                <div>
-                    <input type="checkbox" id="saldoAFavor" name="saldoAFavor" onchange="toggleConditionalField('saldoAFavor', 'saldoFavorFields')">
-                    <label for="saldoAFavor" class="form-label ml-2">¿La declaración arrojó saldo a favor?</label>
-                    <div id="saldoFavorFields" class="conditional-field hidden">
-                        <label for="fechaSolicitudDevolucion" class="form-label">Fecha de Solicitud de Devolución/Compensación (si aplica):</label>
-                        <input type="date" id="fechaSolicitudDevolucion" class="form-input">
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <input type="checkbox" id="perdidasFiscales" name="perdidasFiscales">
-                    <label for="perdidasFiscales" class="form-label ml-2">¿Se declaran o compensan pérdidas fiscales?</label>
-                </div>
-                <div class="mt-4">
-                    <input type="checkbox" id="regimenPreciosTransferencia" name="regimenPreciosTransferencia">
-                    <label for="regimenPreciosTransferencia" class="form-label ml-2">¿El contribuyente pertenece al régimen de precios de transferencia?</label>
-                </div>
-                 <div class="mt-4">
-                    <input type="checkbox" id="aceptacionLiquidacionProvisional" name="aceptacionLiquidacionProvisional">
-                    <label for="aceptacionLiquidacionProvisional" class="form-label ml-2">¿Hubo aceptación de liquidación provisional?</label>
-                     </div>
-                <div class="mt-4">
-                    <input type="checkbox" id="beneficioAuditoria" name="beneficioAuditoria" onchange="toggleConditionalField('beneficioAuditoria', 'beneficioAuditoriaFields')">
-                    <label for="beneficioAuditoria" class="form-label ml-2">¿Aplica al beneficio de auditoría? (Art. 689-3 E.T.)</label>
-                    <div id="beneficioAuditoriaFields" class="conditional-field hidden">
-                        <label for="incrementoImpuestoNeto" class="form-label">Porcentaje de Incremento del Impuesto Neto de Renta (ej. 30 para 30%):</label>
-                        <input type="number" id="incrementoImpuestoNeto" class="form-input" placeholder="Ej: 35">
-                        <p class="text-xs text-gray-500 mt-1">Nota: La ley actual refiere incrementos del 20% o 30%. Este campo sigue la lógica de su ejemplo (>=35 para 6 meses).</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h2>3. Actuaciones DIAN y Contribuyente (Pre-Requerimiento Especial)</h2>
-                <div>
-                    <input type="checkbox" id="notificacionEmplazamientoCorregir" name="notificacionEmplazamientoCorregir" onchange="toggleConditionalField('notificacionEmplazamientoCorregir', 'emplazamientoFields')">
-                    <label for="notificacionEmplazamientoCorregir" class="form-label ml-2">¿Hubo notificación de Emplazamiento para Corregir?</label>
-                    <div id="emplazamientoFields" class="conditional-field hidden">
-                        <label for="fechaNotificacionEmplazamientoCorregir" class="form-label">Fecha Notificación Emplazamiento:</label>
-                        <input type="date" id="fechaNotificacionEmplazamientoCorregir" class="form-input">
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <input type="checkbox" id="notificacionAutoInspeccionTributaria" name="notificacionAutoInspeccionTributaria" onchange="toggleConditionalField('notificacionAutoInspeccionTributaria', 'inspeccionTribFields')">
-                    <label for="notificacionAutoInspeccionTributaria" class="form-label ml-2">¿Hubo notificación de Auto de Inspección Tributaria?</label>
-                    <div id="inspeccionTribFields" class="conditional-field hidden">
-                        <label for="fechaNotificacionAutoInspeccionTributaria" class="form-label">Fecha Notificación Auto Inspección Tributaria:</label>
-                        <input type="date" id="fechaNotificacionAutoInspeccionTributaria" class="form-input">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-section">
-                <h2>4. Requerimiento Especial (RE)</h2>
-                <div>
-                    <input type="checkbox" id="notificacionRequerimientoEspecial" name="notificacionRequerimientoEspecial" onchange="toggleConditionalField('notificacionRequerimientoEspecial', 'requerimientoFields')">
-                    <label for="notificacionRequerimientoEspecial" class="form-label ml-2">¿Hubo notificación de Requerimiento Especial (RE)?</label>
-                    <div id="requerimientoFields" class="conditional-field hidden">
-                        <label for="fechaNotificacionRequerimientoEspecial" class="form-label">Fecha Notificación RE:</label>
-                        <input type="date" id="fechaNotificacionRequerimientoEspecial" class="form-input">
-                        
-                        <label for="fechaVencimientoRespuestaRequerimiento" class="form-label mt-2">Fecha Vencimiento Plazo Respuesta al RE:</label>
-                        <input type="date" id="fechaVencimientoRespuestaRequerimiento" class="form-input">
-
-                        <div class="mt-3">
-                             <input type="checkbox" id="notificacionAmpliacionRequerimiento" name="notificacionAmpliacionRequerimiento" onchange="toggleConditionalField('notificacionAmpliacionRequerimiento', 'ampliacionRequerimientoFields')">
-                             <label for="notificacionAmpliacionRequerimiento" class="form-label ml-2">¿Hubo Ampliación al RE?</label>
-                             <div id="ampliacionRequerimientoFields" class="conditional-field hidden">
-                                <label for="fechaNotificacionAmpliacionRequerimiento" class="form-label">Fecha Notificación Ampliación RE:</label>
-                                <input type="date" id="fechaNotificacionAmpliacionRequerimiento" class="form-input">
-                                <label for="fechaVencimientoRespuestaAmpliacion" class="form-label mt-2">Fecha Vencimiento Plazo Respuesta a Ampliación:</label>
-                                <input type="date" id="fechaVencimientoRespuestaAmpliacion" class="form-input">
-                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h2>5. Liquidación Oficial de Revisión (LOR) y Etapas Posteriores</h2>
-                 <div>
-                    <input type="checkbox" id="practicaInspeccionContablePostRequerimiento" name="practicaInspeccionContablePostRequerimiento" onchange="toggleConditionalField('practicaInspeccionContablePostRequerimiento', 'inspeccionContableFields')">
-                    <label for="practicaInspeccionContablePostRequerimiento" class="form-label ml-2">¿Se practicó Inspección Contable (después del RE, antes de LOR)?</label>
-                    <div id="inspeccionContableFields" class="conditional-field hidden">
-                        <label for="fechaNotificacionAutoInspeccionContable" class="form-label">Fecha Notificación Auto Inspección Contable:</label>
-                        <input type="date" id="fechaNotificacionAutoInspeccionContable" class="form-input">
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <input type="checkbox" id="notificacionLiquidacionOficial" name="notificacionLiquidacionOficial" onchange="toggleConditionalField('notificacionLiquidacionOficial', 'liquidacionFields')">
-                    <label for="notificacionLiquidacionOficial" class="form-label ml-2">¿Hubo notificación de Liquidación Oficial de Revisión (LOR)?</label>
-                    <div id="liquidacionFields" class="conditional-field hidden">
-                        <label for="fechaNotificacionLiquidacionOficial" class="form-label">Fecha Notificación LOR:</label>
-                        <input type="date" id="fechaNotificacionLiquidacionOficial" class="form-input">
-                        
-                        <div class="mt-3">
-                            <input type="checkbox" id="interposicionRecursoReconsideracion" name="interposicionRecursoReconsideracion" onchange="toggleConditionalField('interposicionRecursoReconsideracion', 'recursoFields')">
-                            <label for="interposicionRecursoReconsideracion" class="form-label ml-2">¿Se interpuso Recurso de Reconsideración (RR)?</label>
-                            <div id="recursoFields" class="conditional-field hidden">
-                                <label for="fechaInterposicionRecurso" class="form-label">Fecha Interposición RR:</label>
-                                <input type="date" id="fechaInterposicionRecurso" class="form-input">
-                                <label for="fechaNotificacionResolucionRecurso" class="form-label mt-2">Fecha Notificación Resolución del RR (si aplica):</label>
-                                <input type="date" id="fechaNotificacionResolucionRecurso" class="form-input">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <button type="button" onclick="determinarVencimientoExpediente()" class="w-full btn-primary mt-6">
-                Calcular Vencimiento
+            <nav class="hidden md:flex space-x-4">
+                <a href="#documentacion" class="hover:text-yellow-300 transition duration-300">Documentación</a>
+                <a href="#normatividad" class="hover:text-yellow-300 transition duration-300">Normatividad</a>
+                <a href="#herramientas" class="hover:text-yellow-300 transition duration-300">Herramientas</a>
+                <a href="#soporte" class="hover:text-yellow-300 transition duration-300">Soporte</a>
+            </nav>
+            <button id="mobileMenuButton" class="md:hidden focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
             </button>
-        </form>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-800 text-center">
+            <a href="#documentacion" class="block py-2 px-4 text-sm hover:bg-gray-700">Documentación</a>
+            <a href="#normatividad" class="block py-2 px-4 text-sm hover:bg-gray-700">Normatividad</a>
+            <a href="#herramientas" class="block py-2 px-4 text-sm hover:bg-gray-700">Herramientas</a>
+            <a href="#soporte" class="block py-2 px-4 text-sm hover:bg-gray-700">Soporte</a>
+        </div>
+    </header>
 
-        <div id="resultadoContainer" class="mt-8 hidden">
-            <h3 class="text-xl font-semibold mb-3">Resultado del Análisis:</h3>
-            <pre id="resultadoTexto" class="text-sm bg-gray-50 p-4 rounded whitespace-pre-wrap"></pre>
+    <section class="py-12 md:py-20 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Bienvenido al Centro de Recursos para Auditores</h2>
+            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Encuentre aquí la documentación, normatividad vigente y herramientas esenciales para la gestión eficiente de expedientes tributarios.</p>
+            <div class="search-bar max-w-lg mx-auto mb-8">
+                <i class="fas fa-search"></i>
+                <input type="text" id="mainSearch" placeholder="Buscar en todo el portal..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
+            </div>
+            <div class="space-x-0 md:space-x-4 space-y-4 md:space-y-0">
+                <a href="#documentacion" class="btn-primary inline-block">
+                    <i class="fas fa-book mr-2"></i>Ver Documentación
+                </a>
+                <a href="#herramientas" class="btn-secondary inline-block">
+                    <i class="fas fa-tools mr-2"></i>Explorar Herramientas
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="documentacion" class="py-12 md:py-16 fade-in-section">
+        <div class="container mx-auto px-6">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center section-title">Documentación Esencial</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-file-alt card-icon mr-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-700">Guía de Procedimientos</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">Manual detallado sobre los procedimientos de auditoría y fiscalización.</p>
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                            Leer más <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-folder-open card-icon mr-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-700">Formatos y Plantillas</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">Acceso a todos los formatos actualizados para la gestión de expedientes.</p>
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                            Descargar <i class="fas fa-download ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-book-reader card-icon mr-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-700">Casos de Estudio</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">Análisis de casos relevantes y mejores prácticas en auditoría.</p>
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                            Consultar <i class="fas fa-search-plus ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="normatividad" class="py-12 md:py-16 bg-white fade-in-section" style="animation-delay: 0.2s;">
+        <div class="container mx-auto px-6">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center section-title">Normatividad Vigente</h2>
+            <div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg">
+                <ul id="normatividadList" class="divide-y divide-gray-200">
+                    <li class="interactive-list-item">
+                        <i class="fas fa-balance-scale"></i>
+                        <span>Estatuto Tributario Nacional - Actualizado 2025</span>
+                        <a href="#" class="float-right text-sm text-blue-500 hover:underline">Ver Documento</a>
+                    </li>
+                    <li class="interactive-list-item">
+                        <i class="fas fa-gavel"></i>
+                        <span>Decreto Reglamentario 1625 de 2016 (Único Reglamentario en Materia Tributaria)</span>
+                        <a href="#" class="float-right text-sm text-blue-500 hover:underline">Ver Documento</a>
+                    </li>
+                    <li class="interactive-list-item">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Resoluciones DIAN Recientes (Fiscalización)</span>
+                        <a href="#" class="float-right text-sm text-blue-500 hover:underline">Ver Documentos</a>
+                    </li>
+                    <li class="interactive-list-item">
+                        <i class="fas fa-landmark"></i>
+                        <span>Conceptos Unificados DIAN</span>
+                        <a href="#" class="float-right text-sm text-blue-500 hover:underline">Consultar Base</a>
+                    </li>
+                </ul>
+            </div>
+             <div class="text-center mt-8">
+                <button id="addNormaButton" class="btn-primary">
+                    <i class="fas fa-plus-circle mr-2"></i>Sugerir Nueva Norma
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="herramientas" class="py-12 md:py-16 fade-in-section" style="animation-delay: 0.4s;">
+        <div class="container mx-auto px-6">
+            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center section-title">Herramientas y Aplicativos</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card">
+                    <div class="p-6 text-center">
+                        <i class="fas fa-calculator card-icon mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Calculadora de Sanciones</h3>
+                        <p class="text-gray-600 mb-4">Estime sanciones por extemporaneidad, corrección, etc.</p>
+                        <a href="#" class="btn-secondary inline-block w-full text-center">Acceder</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="p-6 text-center">
+                        <i class="fas fa-calendar-alt card-icon mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Calendario Tributario</h3>
+                        <p class="text-gray-600 mb-4">Fechas clave y vencimientos importantes.</p>
+                        <a href="#" class="btn-secondary inline-block w-full text-center">Consultar</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="p-6 text-center">
+                        <i class="fas fa-search-dollar card-icon mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Validador RUT</h3>
+                        <p class="text-gray-600 mb-4">Verifique la validez y estado de un RUT.</p>
+                        <a href="#" class="btn-secondary inline-block w-full text-center">Utilizar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                 <button id="addToolButton" class="btn-primary">
+                    <i class="fas fa-tools mr-2"></i>Proponer Nueva Herramienta
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="soporte" class="py-12 md:py-16 bg-white fade-in-section" style="animation-delay: 0.6s;">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4 section-title">Soporte y Contacto</h2>
+            <p class="text-lg text-gray-600 mb-6">¿Necesita ayuda o tiene alguna consulta?</p>
+            <div class="max-w-md mx-auto bg-gray-50 p-8 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Mesa de Ayuda Interna</h3>
+                <p class="text-gray-600 mb-1"><i class="fas fa-phone-alt mr-2 text-blue-600"></i>Extensión: 1234, 1235</p>
+                <p class="text-gray-600 mb-4"><i class="fas fa-envelope mr-2 text-blue-600"></i>Email: soporte.fiscalizacion.girardot@dian.gov.co</p>
+                <a href="#" class="btn-primary inline-block"><i class="fas fa-question-circle mr-2"></i>Preguntas Frecuentes</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="header-gradient text-white py-8 text-center">
+        <div class="container mx-auto px-6">
+            <img src="https://placehold.co/100x30/ffffff/00529b?text=DIAN" alt="DIAN" class="h-8 mx-auto mb-4 rounded">
+            <p class="text-sm">&copy; <span id="currentYear"></span> Dirección de Impuestos y Aduanas Nacionales de Colombia.</p>
+            <p class="text-xs mt-1">Portal de Auditores de Fiscalización - Seccional Girardot. Todos los derechos reservados.</p>
+            <div class="mt-4">
+                <a href="https://www.dian.gov.co" target="_blank" class="text-yellow-300 hover:text-yellow-500 mx-2">Sitio Oficial DIAN</a>
+                <span class="text-gray-400">|</span>
+                <a href="#" class="text-yellow-300 hover:text-yellow-500 mx-2">Intranet</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="normaModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center hidden z-50">
+        <div class="relative mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Sugerir Nueva Norma/Documento</h3>
+                <form id="normaForm">
+                    <div class="mb-4 text-left">
+                        <label for="normaTitulo" class="block text-sm font-medium text-gray-700">Título de la Norma/Documento:</label>
+                        <input type="text" name="normaTitulo" id="normaTitulo" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div class="mb-4 text-left">
+                        <label for="normaDescripcion" class="block text-sm font-medium text-gray-700">Descripción Breve (opcional):</label>
+                        <textarea name="normaDescripcion" id="normaDescripcion" rows="3" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                    </div>
+                    <div class="mb-4 text-left">
+                        <label for="normaEnlace" class="block text-sm font-medium text-gray-700">Enlace (si aplica):</label>
+                        <input type="url" name="normaEnlace" id="normaEnlace" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="https://ejemplo.com/documento.pdf">
+                    </div>
+                    <div class="items-center gap-4 py-3">
+                        <button id="closeNormaModal" type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 mr-2">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="px-4 py-2 btn-primary text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            Enviar Sugerencia
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toolModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center hidden z-50">
+        <div class="relative mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Proponer Nueva Herramienta/Aplicativo</h3>
+                <form id="toolForm">
+                    <div class="mb-4 text-left">
+                        <label for="toolNombre" class="block text-sm font-medium text-gray-700">Nombre de la Herramienta:</label>
+                        <input type="text" name="toolNombre" id="toolNombre" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div class="mb-4 text-left">
+                        <label for="toolDescripcion" class="block text-sm font-medium text-gray-700">Descripción y Funcionalidad:</label>
+                        <textarea name="toolDescripcion" id="toolDescripcion" rows="3" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></textarea>
+                    </div>
+                     <div class="mb-4 text-left">
+                        <label for="toolTipo" class="block text-sm font-medium text-gray-700">Tipo de Herramienta:</label>
+                        <select name="toolTipo" id="toolTipo" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            <option value="calculadora">Calculadora</option>
+                            <option value="validador">Validador</option>
+                            <option value="consulta">Sistema de Consulta</option>
+                            <option value="aplicativo">Aplicativo Externo/Interno</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="items-center gap-4 py-3">
+                        <button id="closeToolModal" type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 mr-2">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="px-4 py-2 btn-primary text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            Enviar Propuesta
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
+    <div id="notificationToast" class="fixed bottom-5 right-5 bg-green-500 text-white py-3 px-5 rounded-lg shadow-xl hidden transition-opacity duration-300">
+        <p id="toastMessage">¡Acción completada!</p>
+    </div>
+
+
     <script>
-        // --- Funciones Auxiliares de Fechas (usando date-fns) ---
-        // Se accede a date-fns a través de window.dateFns para mayor explicitud.
-        function parseDate(dateString) {
-            if (!dateString) return null;
-            // Verificar si window.dateFns está disponible
-            if (typeof window.dateFns === 'undefined' || typeof window.dateFns.parseISO !== 'function') {
-                console.error("dateFns.parseISO no está disponible. Librería date-fns no cargada correctamente.");
-                return null; 
-            }
-            return window.dateFns.parseISO(dateString + 'T00:00:00');
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                // Close mobile menu if open after click
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+
+        // Fade-in sections on scroll (simple version)
+        const fadeInSections = document.querySelectorAll('.fade-in-section');
+        const observerOptions = {
+            root: null, // relative to document viewport
+            rootMargin: '0px',
+            threshold: 0.1 // 10% of item visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target); // Optional: stop observing once animated
+                }
+            });
+        }, observerOptions);
+
+        fadeInSections.forEach(section => {
+            section.style.animationPlayState = 'paused'; // Ensure animation doesn't run on load
+            observer.observe(section);
+        });
+
+        // Modal functionality
+        const normaModal = document.getElementById('normaModal');
+        const toolModal = document.getElementById('toolModal');
+        const addNormaButton = document.getElementById('addNormaButton');
+        const closeNormaModal = document.getElementById('closeNormaModal');
+        const normaForm = document.getElementById('normaForm');
+        
+        const addToolButton = document.getElementById('addToolButton');
+        const closeToolModal = document.getElementById('closeToolModal');
+        const toolForm = document.getElementById('toolForm');
+
+        const notificationToast = document.getElementById('notificationToast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        function showToast(message) {
+            toastMessage.textContent = message;
+            notificationToast.classList.remove('hidden');
+            notificationToast.classList.add('opacity-100');
+            setTimeout(() => {
+                notificationToast.classList.remove('opacity-100');
+                notificationToast.classList.add('hidden');
+            }, 3000);
         }
 
-        function formatDate(dateObj) {
-            if (!dateObj) return "N/A";
-            if (typeof window.dateFns === 'undefined' || typeof window.dateFns.isValid !== 'function' || typeof window.dateFns.format !== 'function') {
-                 console.error("Funciones de date-fns para formatear o validar no están disponibles.");
-                 return "Error Fechas";
-            }
-            if (!window.dateFns.isValid(dateObj)) return "Fecha Inválida"; // Retornar algo distintivo para fechas inválidas
-            return window.dateFns.format(dateObj, 'yyyy-MM-dd');
+        if (addNormaButton) {
+            addNormaButton.addEventListener('click', () => normaModal.classList.remove('hidden'));
+        }
+        if (closeNormaModal) {
+            closeNormaModal.addEventListener('click', () => normaModal.classList.add('hidden'));
+        }
+        if (normaForm) {
+            normaForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Aquí iría la lógica para enviar los datos del formulario
+                console.log('Sugerencia de norma enviada:', {
+                    titulo: normaForm.normaTitulo.value,
+                    descripcion: normaForm.normaDescripcion.value,
+                    enlace: normaForm.normaEnlace.value
+                });
+                normaModal.classList.add('hidden');
+                normaForm.reset();
+                showToast('¡Sugerencia de norma enviada con éxito!');
+            });
         }
 
-        function sumarMeses(fecha, meses) {
-            if (!fecha || typeof meses !== 'number') return null;
-            if (typeof window.dateFns === 'undefined' || typeof window.dateFns.isValid !== 'function' || typeof window.dateFns.addMonths !== 'function') {
-                console.error("Funciones de date-fns para sumar meses no están disponibles.");
-                return null;
-            }
-            if (!window.dateFns.isValid(fecha)) return null;
-            return window.dateFns.addMonths(fecha, meses);
+        if (addToolButton) {
+            addToolButton.addEventListener('click', () => toolModal.classList.remove('hidden'));
         }
-
-        function sumarAños(fecha, años) {
-            if (!fecha || typeof años !== 'number') return null;
-             if (typeof window.dateFns === 'undefined' || typeof window.dateFns.isValid !== 'function' || typeof window.dateFns.addYears !== 'function') {
-                console.error("Funciones de date-fns para sumar años no están disponibles.");
-                return null;
-            }
-            if (!window.dateFns.isValid(fecha)) return null;
-            return window.dateFns.addYears(fecha, años);
+        if (closeToolModal) {
+            closeToolModal.addEventListener('click', () => toolModal.classList.add('hidden'));
+        }
+        if (toolForm) {
+            toolForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Aquí iría la lógica para enviar los datos del formulario
+                console.log('Propuesta de herramienta enviada:', {
+                    nombre: toolForm.toolNombre.value,
+                    descripcion: toolForm.toolDescripcion.value,
+                    tipo: toolForm.toolTipo.value
+                });
+                toolModal.classList.add('hidden');
+                toolForm.reset();
+                showToast('¡Propuesta de herramienta enviada con éxito!');
+            });
         }
         
-        function esFechaMenorOIgual(fecha1, fecha2) {
-            if (!fecha1 || !fecha2) return false;
-            if (typeof window.dateFns === 'undefined' || 
-                typeof window.dateFns.isValid !== 'function' || 
-                typeof window.dateFns.isBefore !== 'function' ||
-                typeof window.dateFns.isEqual !== 'function') {
-                console.error("Funciones de date-fns para comparar fechas no están disponibles.");
-                return false;
+        // Cerrar modal al hacer clic fuera de él
+        window.addEventListener('click', (event) => {
+            if (event.target === normaModal) {
+                normaModal.classList.add('hidden');
             }
-            if (!window.dateFns.isValid(fecha1) || !window.dateFns.isValid(fecha2)) return false;
-            return window.dateFns.isBefore(fecha1, fecha2) || window.dateFns.isEqual(fecha1, fecha2);
-        }
-
-        function esFechaMayor(fecha1, fecha2) {
-            if (!fecha1 || !fecha2) return false;
-             if (typeof window.dateFns === 'undefined' || 
-                typeof window.dateFns.isValid !== 'function' || 
-                typeof window.dateFns.isAfter !== 'function') {
-                console.error("Funciones de date-fns para comparar fechas no están disponibles.");
-                return false;
+            if (event.target === toolModal) {
+                toolModal.classList.add('hidden');
             }
-            if (!window.dateFns.isValid(fecha1) || !window.dateFns.isValid(fecha2)) return false;
-            return window.dateFns.isAfter(fecha1, fecha2);
-        }
+        });
 
-
-        // --- Lógica de Cálculo ---
-        function getInitialFirmnessInfo(datos) {
-            // Verificar si dateFns está cargado al inicio de la lógica principal que lo usa.
-            if (typeof window.dateFns === 'undefined') {
-                return { error: "La librería de fechas (date-fns) no está cargada. No se pueden realizar cálculos." };
-            }
-
-            let fechaBaseCalculo;
-            let terminoEnMeses;
-            const hoy = new Date(); 
-
-            if (datos.declaracionCorregida && datos.fechaCorreccion) {
-                fechaBaseCalculo = datos.fechaCorreccion;
-            } else if (datos.fechaPresentacionDeclaracion) {
-                fechaBaseCalculo = datos.fechaPresentacionDeclaracion;
-            } else {
-                return { error: "Fecha de presentación de la declaración es requerida." };
-            }
-            
-            // Asegurarse que la fecha base sea válida antes de usarla
-            if (!fechaBaseCalculo || !window.dateFns.isValid(fechaBaseCalculo)) { 
-                return { error: "La fecha base para el cálculo (presentación/corrección) no es válida o no se pudo parsear."};
-            }
-
-            if (datos.aceptacionLiquidacionProvisional) {
-                terminoEnMeses = 6; 
-            } else if (datos.beneficioAuditoria) {
-                if (datos.fechaVencimientoPlazoDeclarar && 
-                    window.dateFns.isValid(datos.fechaVencimientoPlazoDeclarar) && 
-                    window.dateFns.isAfter(fechaBaseCalculo, datos.fechaVencimientoPlazoDeclarar)) {
-                     return { error: "Para beneficio de auditoría, la declaración debe presentarse oportunamente."};
-                }
-                const incremento = parseFloat(datos.incrementoImpuestoNeto);
-                if (isNaN(incremento)) return { error: "Incremento para beneficio de auditoría no es válido."};
-                terminoEnMeses = incremento >= 35 ? 6 : 12;
-            } else if (datos.perdidasFiscales || datos.regimenPreciosTransferencia) {
-                terminoEnMeses = 5 * 12; 
-            } else if (datos.saldoAFavor && datos.fechaSolicitudDevolucion) {
-                if (!datos.fechaSolicitudDevolucion || !window.dateFns.isValid(datos.fechaSolicitudDevolucion)) { // Chequeo de validez
-                     return { error: "Fecha de solicitud de devolución no es válida o no se pudo parsear."};
-                }
-                fechaBaseCalculo = datos.fechaSolicitudDevolucion;
-                terminoEnMeses = 3 * 12; 
-            } else {
-                terminoEnMeses = 3 * 12; 
-            }
-            
-            const fechaFirmezaProyectadaSinActuaciones = window.dateFns.addMonths(fechaBaseCalculo, terminoEnMeses);
-
-            return { fechaBaseCalculo, terminoEnMeses, fechaFirmezaProyectadaSinActuaciones, error: null };
-        }
-        
-        function getDeadlineForRE(initialFirmnessInfo, datos) {
-            if (typeof window.dateFns === 'undefined') return { error: "Librería date-fns no cargada." };
-            if (initialFirmnessInfo.error) return { error: initialFirmnessInfo.error };
-
-            let plazoParaNotificarREEnMeses = initialFirmnessInfo.terminoEnMeses;
-            const fechaInicioComputoPlazoRE = initialFirmnessInfo.fechaBaseCalculo;
-            if (!fechaInicioComputoPlazoRE || !window.dateFns.isValid(fechaInicioComputoPlazoRE)) {
-                return { error: "Fecha base para RE inválida en getDeadlineForRE." };
-            }
-            let suspensionMesesParaRE = 0;
-            let detalleSuspensionRE = "";
-
-            if (datos.notificacionEmplazamientoCorregir && datos.fechaNotificacionEmplazamientoCorregir) {
-                if (!window.dateFns.isValid(datos.fechaNotificacionEmplazamientoCorregir)) return { error: "Fecha de emplazamiento inválida."};
-                suspensionMesesParaRE += 1;
-                detalleSuspensionRE += `\n  - Suspensión de 1 mes por Emplazamiento para Corregir (notificado el ${formatDate(datos.fechaNotificacionEmplazamientoCorregir)}).`;
-            }
-
-            if (datos.notificacionAutoInspeccionTributaria && datos.fechaNotificacionAutoInspeccionTributaria) {
-                if (!window.dateFns.isValid(datos.fechaNotificacionAutoInspeccionTributaria)) return { error: "Fecha de auto de inspección tributaria inválida."};
-                suspensionMesesParaRE += 3;
-                detalleSuspensionRE += `\n  - Suspensión de 3 meses por Auto de Inspección Tributaria (notificado el ${formatDate(datos.fechaNotificacionAutoInspeccionTributaria)}).`;
-            }
-            
-            const fechaLimiteNotificacionRE = window.dateFns.addMonths(fechaInicioComputoPlazoRE, plazoParaNotificarREEnMeses + suspensionMesesParaRE);
-            return { fechaLimiteNotificacionRE, detalleSuspensionRE, error: null };
-        }
-
-        function getDeadlineForLOR(datos) {
-            if (typeof window.dateFns === 'undefined') return { error: "Librería date-fns no cargada." };
-            let fechaBaseParaLOR;
-            if (datos.notificacionAmpliacionRequerimiento && datos.fechaVencimientoRespuestaAmpliacion) {
-                if (!window.dateFns.isValid(datos.fechaVencimientoRespuestaAmpliacion)) return { error: "Fecha vencimiento respuesta ampliación RE inválida."};
-                fechaBaseParaLOR = datos.fechaVencimientoRespuestaAmpliacion;
-            } else if (datos.fechaVencimientoRespuestaRequerimiento) {
-                 if (!window.dateFns.isValid(datos.fechaVencimientoRespuestaRequerimiento)) return { error: "Fecha vencimiento respuesta RE inválida."};
-                fechaBaseParaLOR = datos.fechaVencimientoRespuestaRequerimiento;
-            } else {
-                return { error: "Falta fecha de vencimiento de respuesta al RE o su ampliación." };
-            }
-
-            const plazoParaNotificarLOREnMeses = 6; 
-            let suspensionMesesParaLOR = 0;
-            let detalleSuspensionLOR = "";
-
-            if (datos.practicaInspeccionContablePostRequerimiento && datos.fechaNotificacionAutoInspeccionContable) {
-                if (!window.dateFns.isValid(datos.fechaNotificacionAutoInspeccionContable)) return { error: "Fecha auto inspección contable inválida."};
-                suspensionMesesParaLOR += 3;
-                detalleSuspensionLOR = `\n  - Suspensión de 3 meses por Auto de Inspección Contable (notificado el ${formatDate(datos.fechaNotificacionAutoInspeccionContable)}).`;
-            }
-            
-            const fechaLimiteNotificacionLOR = window.dateFns.addMonths(fechaBaseParaLOR, plazoParaNotificarLOREnMeses + suspensionMesesParaLOR);
-            return { fechaLimiteNotificacionLOR, detalleSuspensionLOR, error: null };
-        }
-
-        function getDeadlineForResolucionRecurso(datos) {
-            if (typeof window.dateFns === 'undefined') return { error: "Librería date-fns no cargada." };
-            if (!datos.fechaInterposicionRecurso || !window.dateFns.isValid(datos.fechaInterposicionRecurso)) {
-                return { error: "Falta fecha de interposición del Recurso de Reconsideración o es inválida." };
-            }
-            const fechaLimiteResolucionRR = window.dateFns.addYears(datos.fechaInterposicionRecurso, 1);
-            return { fechaLimiteResolucionRR, error: null };
-        }
-
-        function determinarVencimientoExpediente() {
-            // Verificar si dateFns está cargado al inicio de la función principal.
-            if (typeof window.dateFns === 'undefined') {
-                document.getElementById('resultadoTexto').innerText = "Error Crítico: La librería de fechas (date-fns) no se ha cargado correctamente. Por favor, revise la conexión a internet o la consola del navegador para más detalles. Intente recargar la página.";
-                document.getElementById('resultadoContainer').classList.remove('hidden');
-                console.error("window.dateFns is undefined at the beginning of determinarVencimientoExpediente.");
-                return;
-            }
-            
-            const hoy = new Date(); 
-            let resultadoHTML = "";
-
-            // Recopilar datos del formulario
-            const datos = {
-                fechaVencimientoPlazoDeclarar: parseDate(document.getElementById('fechaVencimientoPlazoDeclarar').value),
-                fechaPresentacionDeclaracion: parseDate(document.getElementById('fechaPresentacionDeclaracion').value),
-                tipoImpuesto: document.getElementById('tipoImpuesto').value,
-                declaracionCorregida: document.getElementById('declaracionCorregida').checked,
-                fechaCorreccion: parseDate(document.getElementById('fechaCorreccion').value),
-                
-                saldoAFavor: document.getElementById('saldoAFavor').checked,
-                fechaSolicitudDevolucion: parseDate(document.getElementById('fechaSolicitudDevolucion').value),
-                perdidasFiscales: document.getElementById('perdidasFiscales').checked,
-                regimenPreciosTransferencia: document.getElementById('regimenPreciosTransferencia').checked,
-                aceptacionLiquidacionProvisional: document.getElementById('aceptacionLiquidacionProvisional').checked,
-                beneficioAuditoria: document.getElementById('beneficioAuditoria').checked,
-                incrementoImpuestoNeto: document.getElementById('incrementoImpuestoNeto').value,
-
-                notificacionEmplazamientoCorregir: document.getElementById('notificacionEmplazamientoCorregir').checked,
-                fechaNotificacionEmplazamientoCorregir: parseDate(document.getElementById('fechaNotificacionEmplazamientoCorregir').value),
-                notificacionAutoInspeccionTributaria: document.getElementById('notificacionAutoInspeccionTributaria').checked,
-                fechaNotificacionAutoInspeccionTributaria: parseDate(document.getElementById('fechaNotificacionAutoInspeccionTributaria').value),
-                
-                notificacionRequerimientoEspecial: document.getElementById('notificacionRequerimientoEspecial').checked,
-                fechaNotificacionRequerimientoEspecial: parseDate(document.getElementById('fechaNotificacionRequerimientoEspecial').value),
-                fechaVencimientoRespuestaRequerimiento: parseDate(document.getElementById('fechaVencimientoRespuestaRequerimiento').value),
-                notificacionAmpliacionRequerimiento: document.getElementById('notificacionAmpliacionRequerimiento').checked,
-                fechaNotificacionAmpliacionRequerimiento: parseDate(document.getElementById('fechaNotificacionAmpliacionRequerimiento').value),
-                fechaVencimientoRespuestaAmpliacion: parseDate(document.getElementById('fechaVencimientoRespuestaAmpliacion').value),
-
-                practicaInspeccionContablePostRequerimiento: document.getElementById('practicaInspeccionContablePostRequerimiento').checked,
-                fechaNotificacionAutoInspeccionContable: parseDate(document.getElementById('fechaNotificacionAutoInspeccionContable').value),
-                notificacionLiquidacionOficial: document.getElementById('notificacionLiquidacionOficial').checked,
-                fechaNotificacionLiquidacionOficial: parseDate(document.getElementById('fechaNotificacionLiquidacionOficial').value),
-                interposicionRecursoReconsideracion: document.getElementById('interposicionRecursoReconsideracion').checked,
-                fechaInterposicionRecurso: parseDate(document.getElementById('fechaInterposicionRecurso').value),
-                fechaNotificacionResolucionRecurso: parseDate(document.getElementById('fechaNotificacionResolucionRecurso').value),
-            };
-
-            // Validación básica de fechas parseadas
-            if (!datos.fechaPresentacionDeclaracion || (datos.declaracionCorregida && !datos.fechaCorreccion)) {
-                 let errorMsg = "";
-                 if(!datos.fechaPresentacionDeclaracion) errorMsg = "Error: La fecha de presentación de la declaración es obligatoria o no es válida.\n";
-                 if(datos.declaracionCorregida && !datos.fechaCorreccion) errorMsg += "Error: Si es una corrección, la fecha de corrección es obligatoria o no es válida.";
-                document.getElementById('resultadoTexto').innerText = errorMsg.trim();
-                document.getElementById('resultadoContainer').classList.remove('hidden');
-                return;
-            }
-
-
-            // 1. Cálculo de Firmeza Inicial y Plazo para RE
-            resultadoHTML += "--- Etapa 1: Firmeza Inicial y Plazo para Requerimiento Especial (RE) ---\n";
-            const initialFirmnessInfo = getInitialFirmnessInfo(datos);
-            if (initialFirmnessInfo.error) {
-                document.getElementById('resultadoTexto').innerText = `Error en Etapa 1: ${initialFirmnessInfo.error}`;
-                document.getElementById('resultadoContainer').classList.remove('hidden');
-                return;
-            }
-            resultadoHTML += `Fecha base para cálculo de firmeza inicial: ${formatDate(initialFirmnessInfo.fechaBaseCalculo)}\n`;
-            resultadoHTML += `Término de firmeza general aplicable (sin actuaciones DIAN): ${initialFirmnessInfo.terminoEnMeses} meses.\n`;
-            resultadoHTML += `Fecha de firmeza proyectada (sin actuaciones DIAN): ${formatDate(initialFirmnessInfo.fechaFirmezaProyectadaSinActuaciones)}\n`;
-
-            const reDeadlineInfo = getDeadlineForRE(initialFirmnessInfo, datos);
-             if (reDeadlineInfo.error) {
-                document.getElementById('resultadoTexto').innerText = `Error en Etapa 1 (Plazo RE): ${reDeadlineInfo.error}`;
-                document.getElementById('resultadoContainer').classList.remove('hidden');
-                return;
-            }
-            resultadoHTML += `Considerando suspensiones para el RE:${reDeadlineInfo.detalleSuspensionRE || " Ninguna."}\n`;
-            resultadoHTML += `Fecha límite para notificar el Requerimiento Especial (RE): ${formatDate(reDeadlineInfo.fechaLimiteNotificacionRE)}\n\n`;
-
-            // 2. Análisis del Requerimiento Especial (RE)
-            if (!datos.notificacionRequerimientoEspecial) {
-                resultadoHTML += "--- Etapa 2: Conclusión sin Requerimiento Especial ---\n";
-                resultadoHTML += `No se ha notificado un Requerimiento Especial.\n`;
-                if (reDeadlineInfo.fechaLimiteNotificacionRE && esFechaMenorOIgual(reDeadlineInfo.fechaLimiteNotificacionRE, hoy)) {
-                    resultadoHTML += `ESTADO: La declaración YA ESTÁ EN FIRME desde el ${formatDate(reDeadlineInfo.fechaLimiteNotificacionRE)}.\n`;
-                } else {
-                    resultadoHTML += `ESTADO: La declaración adquirirá firmeza el ${formatDate(reDeadlineInfo.fechaLimiteNotificacionRE)} si no se notifica un RE a tiempo.\n`;
-                }
-            } else { // Sí hubo notificación de RE
-                 resultadoHTML += "--- Etapa 2: Análisis con Requerimiento Especial Notificado ---\n";
-                if (!datos.fechaNotificacionRequerimientoEspecial) { // Chequear si la fecha es válida
-                     document.getElementById('resultadoTexto').innerText = "Error: Se indicó notificación de RE, pero no se proporcionó la fecha o esta no es válida.";
-                     document.getElementById('resultadoContainer').classList.remove('hidden');
-                     return;
-                }
-                resultadoHTML += `Requerimiento Especial notificado el: ${formatDate(datos.fechaNotificacionRequerimientoEspecial)}.\n`;
-
-                if (reDeadlineInfo.fechaLimiteNotificacionRE && esFechaMayor(datos.fechaNotificacionRequerimientoEspecial, reDeadlineInfo.fechaLimiteNotificacionRE)) {
-                    resultadoHTML += `ALERTA: El RE fue notificado (${formatDate(datos.fechaNotificacionRequerimientoEspecial)}) DESPUÉS del plazo límite (${formatDate(reDeadlineInfo.fechaLimiteNotificacionRE)}).\n`;
-                    resultadoHTML += `ESTADO: La declaración YA ESTÁ EN FIRME desde el ${formatDate(reDeadlineInfo.fechaLimiteNotificacionRE)} (asumiendo que no hubo otras actuaciones válidas no contempladas).\n`;
-                } else {
-                    resultadoHTML += `El RE fue notificado dentro del plazo.\n`;
-                    if (!datos.fechaVencimientoRespuestaRequerimiento && !datos.fechaVencimientoRespuestaAmpliacion) {
-                         resultadoHTML += "ADVERTENCIA: No se puede continuar el análisis sin la fecha de vencimiento de respuesta al RE o su ampliación (o estas no son válidas).\n";
-                    } else {
-                        // 3. Plazo para Liquidación Oficial de Revisión (LOR)
-                        resultadoHTML += "\n--- Etapa 3: Plazo para Liquidación Oficial de Revisión (LOR) ---\n";
-                        const lorDeadlineInfo = getDeadlineForLOR(datos);
-                        if (lorDeadlineInfo.error) {
-                            resultadoHTML += `Error: ${lorDeadlineInfo.error}\n`;
-                        } else {
-                            let fechaBaseLOR = datos.fechaVencimientoRespuestaAmpliacion || datos.fechaVencimientoRespuestaRequerimiento;
-                            resultadoHTML += `Fecha base para cálculo de LOR (vencimiento respuesta RE/Ampliación): ${formatDate(fechaBaseLOR)}\n`;
-                            resultadoHTML += `Considerando suspensiones para la LOR:${lorDeadlineInfo.detalleSuspensionLOR || " Ninguna."}\n`;
-                            resultadoHTML += `Fecha límite para notificar la Liquidación Oficial (LOR): ${formatDate(lorDeadlineInfo.fechaLimiteNotificacionLOR)}\n\n`;
-
-                            // 4. Análisis de la Liquidación Oficial (LOR)
-                            if (!datos.notificacionLiquidacionOficial) {
-                                resultadoHTML += "--- Etapa 4: Conclusión sin Liquidación Oficial ---\n";
-                                resultadoHTML += `No se ha notificado una Liquidación Oficial de Revisión.\n`;
-                                if (lorDeadlineInfo.fechaLimiteNotificacionLOR && esFechaMenorOIgual(lorDeadlineInfo.fechaLimiteNotificacionLOR, hoy)) {
-                                    resultadoHTML += `ESTADO: La declaración (liquidación privada) YA ESTÁ EN FIRME desde el ${formatDate(lorDeadlineInfo.fechaLimiteNotificacionLOR)}.\n`;
-                                } else {
-                                    resultadoHTML += `ESTADO: La declaración (liquidación privada) adquirirá firmeza el ${formatDate(lorDeadlineInfo.fechaLimiteNotificacionLOR)} si no se notifica una LOR a tiempo.\n`;
-                                }
-                            } else { // Sí hubo notificación de LOR
-                                resultadoHTML += "--- Etapa 4: Análisis con Liquidación Oficial Notificada ---\n";
-                                if (!datos.fechaNotificacionLiquidacionOficial) { // Chequear validez
-                                     document.getElementById('resultadoTexto').innerText = "Error: Se indicó notificación de LOR, pero no se proporcionó la fecha o esta no es válida.";
-                                     document.getElementById('resultadoContainer').classList.remove('hidden');
-                                     return;
-                                }
-                                resultadoHTML += `Liquidación Oficial notificada el: ${formatDate(datos.fechaNotificacionLiquidacionOficial)}.\n`;
-                                if (lorDeadlineInfo.fechaLimiteNotificacionLOR && esFechaMayor(datos.fechaNotificacionLiquidacionOficial, lorDeadlineInfo.fechaLimiteNotificacionLOR)) {
-                                    resultadoHTML += `ALERTA: La LOR fue notificada (${formatDate(datos.fechaNotificacionLiquidacionOficial)}) DESPUÉS del plazo límite (${formatDate(lorDeadlineInfo.fechaLimiteNotificacionLOR)}).\n`;
-                                    resultadoHTML += `ESTADO: La declaración (liquidación privada) YA ESTÁ EN FIRME desde el ${formatDate(lorDeadlineInfo.fechaLimiteNotificacionLOR)}.\n`;
-                                } else {
-                                    resultadoHTML += `La LOR fue notificada dentro del plazo.\n`;
-                                    // 5. Análisis del Recurso de Reconsideración (RR)
-                                    resultadoHTML += "\n--- Etapa 5: Análisis del Recurso de Reconsideración (RR) ---\n";
-                                    if (!datos.interposicionRecursoReconsideracion) {
-                                        resultadoHTML += `No se interpuso Recurso de Reconsideración.\n`;
-                                        resultadoHTML += `ESTADO: La Liquidación Oficial de Revisión está en firme. (El contribuyente puede acudir a la Jurisdicción de lo Contencioso Administrativo).\n`;
-                                    } else { // Sí se interpuso RR
-                                        if (!datos.fechaInterposicionRecurso) { // Chequear validez
-                                            resultadoHTML += "ADVERTENCIA: Se indicó interposición de RR, pero falta la fecha o esta no es válida.\n";
-                                        } else {
-                                            resultadoHTML += `Recurso de Reconsideración interpuesto el: ${formatDate(datos.fechaInterposicionRecurso)}.\n`;
-                                            const rrDeadlineInfo = getDeadlineForResolucionRecurso(datos);
-                                            if (rrDeadlineInfo.error) {
-                                                resultadoHTML += `Error: ${rrDeadlineInfo.error}\n`;
-                                            } else {
-                                                resultadoHTML += `Fecha límite para que la DIAN resuelva el Recurso: ${formatDate(rrDeadlineInfo.fechaLimiteResolucionRR)}.\n`;
-                                                if (!datos.fechaNotificacionResolucionRecurso) { // Chequear validez (puede ser null si no se ha notificado)
-                                                    resultadoHTML += `No se ha notificado la Resolución del Recurso.\n`;
-                                                    if (rrDeadlineInfo.fechaLimiteResolucionRR && esFechaMenorOIgual(rrDeadlineInfo.fechaLimiteResolucionRR, hoy)) {
-                                                        resultadoHTML += `ESTADO: YA OPERÓ EL PLAZO PARA SILENCIO ADMINISTRATIVO POSITIVO. La LOR se entiende fallada a favor del contribuyente (la declaración privada queda en firme o según la etapa anterior válida).\n`;
-                                                    } else {
-                                                        resultadoHTML += `ESTADO: Pendiente resolución del Recurso. Si la DIAN no resuelve antes del ${formatDate(rrDeadlineInfo.fechaLimiteResolucionRR)}, operará el Silencio Administrativo Positivo.\n`;
-                                                    }
-                                                } else { // Sí hubo notificación de Resolución del RR
-                                                    resultadoHTML += `Resolución del Recurso notificada el: ${formatDate(datos.fechaNotificacionResolucionRecurso)}.\n`;
-                                                    if (rrDeadlineInfo.fechaLimiteResolucionRR && esFechaMayor(datos.fechaNotificacionResolucionRecurso, rrDeadlineInfo.fechaLimiteResolucionRR)) {
-                                                        resultadoHTML += `ALERTA: La Resolución del Recurso fue notificada (${formatDate(datos.fechaNotificacionResolucionRecurso)}) DESPUÉS del plazo límite (${formatDate(rrDeadlineInfo.fechaLimiteResolucionRR)}).\n`;
-                                                        resultadoHTML += `ESTADO: OPERÓ EL SILENCIO ADMINISTRATIVO POSITIVO. La LOR se entiende fallada a favor del contribuyente.\n`;
-                                                    } else {
-                                                        resultadoHTML += `La Resolución del Recurso fue notificada dentro del plazo.\n`;
-                                                        resultadoHTML += `ESTADO: El acto administrativo que resuelve el recurso está en firme. El contribuyente puede acudir a la Jurisdicción de lo Contencioso Administrativo.\n`;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+        // Búsqueda simple (simulada, solo para demostración)
+        const mainSearch = document.getElementById('mainSearch');
+        if (mainSearch) {
+            mainSearch.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const searchTerm = e.target.value;
+                    if (searchTerm.trim() !== '') {
+                        // Simular una búsqueda
+                        showToast(`Buscando "${searchTerm}"... (Funcionalidad de búsqueda real no implementada)`);
+                        // Aquí se implementaría la lógica de búsqueda real,
+                        // por ejemplo, filtrando contenido o redirigiendo a una página de resultados.
                     }
                 }
-            }
-
-            document.getElementById('resultadoTexto').innerText = resultadoHTML;
-            document.getElementById('resultadoContainer').classList.remove('hidden');
+            });
         }
 
-        // --- Funciones para mostrar/ocultar campos condicionales ---
-        function toggleConditionalField(checkboxId, fieldGroupId) {
-            const checkbox = document.getElementById(checkboxId);
-            const fieldGroup = document.getElementById(fieldGroupId);
-            if (checkbox.checked) {
-                fieldGroup.classList.remove('hidden');
-            } else {
-                fieldGroup.classList.add('hidden');
-            }
-        }
-
-        // Inicializar campos condicionales y verificar date-fns al cargar la página
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if dateFns is loaded once DOM is ready, before any user interaction
-            if (typeof window.dateFns === 'undefined') {
-                console.error("CRITICAL: date-fns library (window.dateFns) was not found after DOMContentLoaded. Calculations will fail.");
-                // Display a persistent error message to the user
-                 const resultadoContainer = document.getElementById('resultadoContainer');
-                 const resultadoTexto = document.getElementById('resultadoTexto');
-                 const calcButton = document.querySelector('button[onclick="determinarVencimientoExpediente()"]');
-
-                 if (resultadoTexto && resultadoContainer) {
-                    resultadoTexto.innerText = "Error Muy Grave: La librería de fechas esencial (date-fns) no pudo cargarse. La calculadora no funcionará. Verifique la consola para errores de red o contacte soporte.";
-                    resultadoContainer.classList.remove('hidden');
-                 }
-                 if(calcButton) {
-                    calcButton.disabled = true;
-                    calcButton.style.backgroundColor = 'grey'; // Indicar visualmente que está deshabilitado
-                    calcButton.title = "Calculadora deshabilitada por error al cargar librería de fechas.";
-                 }
-            } else {
-                console.log("date-fns library loaded successfully.");
-            }
-
-
-            const conditionalCheckboxes = [
-                { cb: 'declaracionCorregida', fg: 'correccionFields'},
-                { cb: 'saldoAFavor', fg: 'saldoFavorFields'},
-                { cb: 'beneficioAuditoria', fg: 'beneficioAuditoriaFields'},
-                { cb: 'notificacionEmplazamientoCorregir', fg: 'emplazamientoFields'},
-                { cb: 'notificacionAutoInspeccionTributaria', fg: 'inspeccionTribFields'},
-                { cb: 'notificacionRequerimientoEspecial', fg: 'requerimientoFields'},
-                { cb: 'notificacionAmpliacionRequerimiento', fg: 'ampliacionRequerimientoFields'},
-                { cb: 'practicaInspeccionContablePostRequerimiento', fg: 'inspeccionContableFields'},
-                { cb: 'notificacionLiquidacionOficial', fg: 'liquidacionFields'},
-                { cb: 'interposicionRecursoReconsideracion', fg: 'recursoFields'}
-            ];
-            conditionalCheckboxes.forEach(item => {
-                 toggleConditionalField(item.cb, item.fg);
-                 // Anidar lógica para sub-condicionales si es necesario
-                 if (item.cb === 'notificacionRequerimientoEspecial') {
-                    const parentCheckbox = document.getElementById('notificacionRequerimientoEspecial');
-                    if (parentCheckbox.checked) {
-                         toggleConditionalField('notificacionAmpliacionRequerimiento', 'ampliacionRequerimientoFields');
-                    } else {
-                         document.getElementById('ampliacionRequerimientoFields').classList.add('hidden');
-                    }
-                 }
-                 if (item.cb === 'notificacionLiquidacionOficial') {
-                    const parentCheckbox = document.getElementById('notificacionLiquidacionOficial');
-                    if (parentCheckbox.checked) {
-                         toggleConditionalField('interposicionRecursoReconsideracion', 'recursoFields');
-                    } else {
-                         document.getElementById('recursoFields').classList.add('hidden');
-                    }
-                 }
+        // Interactividad en la lista de normatividad (ejemplo)
+        const normatividadListItems = document.querySelectorAll('#normatividadList .interactive-list-item');
+        normatividadListItems.forEach(item => {
+            item.addEventListener('click', function(event) {
+                // Evitar que el click en el enlace "Ver Documento" active esta alerta
+                if (event.target.tagName.toLowerCase() !== 'a') {
+                    const normaText = this.querySelector('span').textContent;
+                    console.log(`Elemento de normatividad clickeado: ${normaText}`);
+                    // Aquí podrías, por ejemplo, mostrar más detalles en un modal o panel lateral.
+                    // showToast(`Has hecho clic en: ${normaText.substring(0,30)}...`);
+                }
             });
         });
 
     </script>
 </body>
 </html>
+
