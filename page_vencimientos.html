@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vencimiento Expedientes Fiscalización DIAN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        .card-header {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb; /* Light gray border */
+        }
+        .card-header h2 {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 700;
+            color: #1e3a8a; /* Dark blue */
+        }
+        .card-header .icon {
+            transition: transform 0.3s ease-in-out;
+            font-size: 1.5rem;
+            color: #1e3a8a;
+        }
+        .card-content {
+            padding: 0 24px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+        }
+        .card-content.open {
+            padding: 20px 24px;
+        }
+        .sub-card {
+            background-color: #f9fafb; /* Very light gray for sub-items */
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .sub-card h3 {
+            font-size: 1.125rem; /* 18px */
+            font-weight: 600;
+            color: #1e40af; /* Medium blue */
+            margin-bottom: 8px;
+        }
+        .sub-card p, .sub-card ul {
+            font-size: 0.95rem; /* Slightly smaller than default */
+            color: #374151; /* Dark gray text */
+            line-height: 1.6;
+        }
+        .sub-card ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .sub-card li {
+            margin-bottom: 6px;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #e0f2fe; /* Light sky blue */
+            color: #0c4a6e; /* Darker sky blue */
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        .highlight {
+            color: #c026d3; /* Fuchsia for highlights */
+            font-weight: 600;
+        }
+        .table-container {
+            margin-top: 16px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #d1d5db; /* Gray border for table cells */
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        th {
+            background-color: #e5e7eb; /* Light gray for table headers */
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .decision-tree-node {
+            background-color: #e0e7ff; /* Light indigo */
+            border-left: 4px solid #4f46e5; /* Indigo border */
+            padding: 16px;
+            margin-top: 12px;
+            border-radius: 0 8px 8px 0;
+        }
+        .decision-tree-node strong {
+            color: #3730a3; /* Dark indigo */
+        }
+        .connector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 8px 0;
+        }
+        .connector svg {
+            width: 24px;
+            height: 24px;
+            color: #6b7280; /* Gray for connector arrow */
+        }
+        /* Initial expand for the first section */
+        #card-1 .card-content {
+            max-height: 2000px; /* Adjust as needed */
+            padding: 20px 24px;
+        }
+        #card-1 .icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800">Vencimiento Expedientes Fiscalización DIAN</h1>
+        <p class="text-lg text-gray-600 mt-2">Una guía interactiva sobre IVA, Retefuente y Renta</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto">
+        <div class="card" id="card-1">
+            <div class="card-header" onclick="toggleCard('card-1')">
+                <h2>1. Introducción: Delimitando "Vencimiento"</h2>
+                <span class="icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="sub-card">
+                    <h3>Concepto Clave</h3>
+                    <p>Ligado a la <span class="highlight">firmeza</span> de las declaraciones.</p>
+                </div>
+                <div class="sub-card">
+                    <h3>Vencimiento del Expediente</h3>
+                    <p>La DIAN pierde su facultad legal para modificar la declaración o imponer sanciones. Una vez firme, la declaración es <span class="highlight">inmodificable</span>.</p>
+                </div>
+                <div class="sub-card">
+                    <h3>Naturaleza Dinámica</h3>
+                    <ul>
+                        <li>No es una fecha estática.</li>
+                        <li>Afectada por actuaciones de la DIAN y el contribuyente (interrupciones, suspensiones).</li>
+                        <li><span class="tag">Ejemplo</span>: Término general de firmeza (3 años, Art. 714 E.T.) interrumpido por requerimiento especial; suspendido por auto de inspección.</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>Impuestos Primarios</h3>
+                    <p>IVA, Retención en la Fuente, Renta.</p>
+                </div>
+                <div class="sub-card">
+                    <h3>Objetivos del Informe</h3>
+                    <ul>
+                        <li>Identificar variables normativas y jurisprudenciales para la fecha de vencimiento (firmeza).</li>
+                        <li>Evaluar la viabilidad de un algoritmo para calcular la fecha límite.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="card-2">
+            <div class="card-header" onclick="toggleCard('card-2')">
+                <h2>2. Principio de "Firmeza": Determinante Central</h2>
+                <span class="icon">▼</span>
+            </div>
+            <div class="card-content">
+                <p class="mb-4 text-gray-700">La potestad de fiscalización de la DIAN no es indefinida.</p>
+                <div class="sub-card">
+                    <h3>Término General de Firmeza (Art. 714 E.T.)</h3>
+                    <ul>
+                        <li><span class="highlight">Regla General: Tres (3) Años</span>.
+                            <ul>
+                                <li>Desde vencimiento del plazo para declarar (declaraciones oportunas).</li>
+                                <li>Desde fecha de presentación (declaraciones extemporáneas).</li>
+                            </ul>
+                        </li>
+                        <li><span class="tag">Importante</span>: La notificación del Requerimiento Especial interrumpe el término de firmeza.</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>Términos Especiales de Firmeza (Modifican Regla General)</h3>
+                    <ul>
+                        <li><strong>Declaraciones con Pérdidas Fiscales (Art. 147 E.T. mod. Ley 2010/19)</strong>: <span class="highlight">Cinco (5) años</span>.
+                            <ul>
+                                <li>Antes: 6 años (Ley 1819/16).</li>
+                                <li>Corrección que elimina pérdidas: Pasa a término general de 3 años (Concepto DIAN 022133 de 2024).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Declaraciones con Saldo a Favor</strong>:
+                            <ul>
+                                <li>Con solicitud de devolución/compensación: <span class="highlight">Tres (3) años</span> desde fecha de solicitud.</li>
+                                <li>Con imputación de saldo (sin solicitud): Término general de 3 años.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Declaraciones Sujetas a Régimen de Precios de Transferencia</strong>: <span class="highlight">Cinco (5) años</span>.</li>
+                        <li><strong>Beneficio de Auditoría (Art. 689-3 E.T.)</strong>:
+                            <ul>
+                                <li>Firmeza en <span class="highlight">6 meses</span>: Incremento impuesto neto renta >= 35%.</li>
+                                <li>Firmeza en <span class="highlight">12 meses</span>: Incremento impuesto neto renta 25% - <35%.</li>
+                                <li>Requisitos: Impuesto año anterior >= 71 UVT, no retenciones falsas.</li>
+                                <li>Prorrogado para 2024, 2025, 2026 (Ley 2294 de 2023).</li>
+                                <li><span class="tag">Nota</span>: No extensivo a IVA y Retefuente del mismo periodo.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Firmeza por Aceptación Liquidación Provisional (Art. 764-4 E.T.)</strong>: <span class="highlight">Seis (6) meses</span> desde corrección/presentación.</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>Unificación Término Firmeza Renta, IVA, Retefuente (Art. 705-1 E.T.)</h3>
+                    <p>Los términos de IVA y Retefuente son los mismos que los de Renta del respectivo año gravable. Esto puede extender la fiscalización de IVA y Retefuente.</p>
+                </div>
+                 <div class="sub-card">
+                    <h3>Jerarquía de Términos Especiales</h3>
+                     <ul>
+                        <li>Beneficio de Auditoría prevalece sobre término por pérdidas (si se cumplen requisitos).</li>
+                        <li>Concepto DIAN 022133 de 2024 relevante para correcciones.</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>Tabla Resumen de Términos de Firmeza</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Situación</th>
+                                    <th>Término de Firmeza</th>
+                                    <th>Referencia Legal Principal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Regla General</td>
+                                    <td>3 años</td>
+                                    <td>Art. 714 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Declaraciones con Pérdidas Fiscales</td>
+                                    <td>5 años</td>
+                                    <td>Art. 147 E.T. (mod. Ley 2010/19)</td>
+                                </tr>
+                                <tr>
+                                    <td>Saldo a Favor (con solicitud dev/comp)</td>
+                                    <td>3 años desde solicitud</td>
+                                    <td>Art. 714 E.T. (interpretación)</td>
+                                </tr>
+                                 <tr>
+                                    <td>Saldo a Favor (con imputación, sin solicitud)</td>
+                                    <td>3 años (general)</td>
+                                    <td>Art. 714 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Precios de Transferencia</td>
+                                    <td>5 años</td>
+                                    <td>Art. 714 E.T. (remisión)</td>
+                                </tr>
+                                <tr>
+                                    <td>Beneficio de Auditoría (Incremento >= 35%)</td>
+                                    <td>6 meses</td>
+                                    <td>Art. 689-3 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Beneficio de Auditoría (Incremento 25% - <35%)</td>
+                                    <td>12 meses</td>
+                                    <td>Art. 689-3 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Aceptación Liquidación Provisional</td>
+                                    <td>6 meses desde corrección/presentación</td>
+                                    <td>Art. 764-4 E.T.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="card-3">
+            <div class="card-header" onclick="toggleCard('card-3')">
+                <h2>3. Eventos que Modifican Línea de Tiempo: Suspensión e Interrupción</h2>
+                <span class="icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="sub-card">
+                    <h3>Interrupción por Notificación Requerimiento Especial</h3>
+                    <p>Detiene el conteo del término de firmeza y abre una nueva fase procesal.</p>
+                </div>
+                <div class="sub-card">
+                    <h3>Suspensión Término para Notificar Requerimiento Especial (Art. 706 E.T.)</h3>
+                    <ul>
+                        <li><strong>Auto Inspección Tributaria de Oficio</strong>: Suspende por <span class="highlight">3 meses</span> (fijos, no prorrogables).</li>
+                        <li><strong>Inspección Tributaria a Solicitud del Contribuyente</strong>: Suspende mientras dure la inspección.</li>
+                        <li><strong>Notificación Emplazamiento para Corregir</strong>: Suspende por <span class="highlight">1 mes</span> siguiente a notificación. <span class="tag">Nota</span>: Pierde coherencia si ya hay inspección.</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>Impacto Correcciones del Contribuyente (Art. 588 y 589 E.T.)</h3>
+                    <p>Distinción entre plazo para corregir (contribuyente) vs. plazo de firmeza (DIAN).</p>
+                    <ul>
+                        <li><strong>Correcciones que Aumentan Impuesto / Disminuyen Saldo a Favor (Art. 588 E.T.)</strong>: Dentro de 3 años sig. a vencimiento para declarar, antes de requerimiento.</li>
+                        <li><strong>Correcciones que Disminuyen Valor a Pagar / Aumentan Saldo a Favor (Art. 589 E.T.)</strong>: Dentro de 1 año sig. a vencimiento para declarar. Término de revisión DIAN desde fecha de corrección.</li>
+                        <li><strong>Corrección y Firmeza por Pérdidas (Concepto DIAN 022133 de 2024)</strong>: Si la corrección elimina pérdidas, pasa al término general.</li>
+                    </ul>
+                </div>
+                 <div class="sub-card">
+                    <h3>Tabla Resumen Eventos Suspensión/Interrupción (Término para Notificar RE)</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Evento</th>
+                                    <th>Efecto</th>
+                                    <th>Duración/Impacto</th>
+                                    <th>Referencia Legal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Notificación Requerimiento Especial</td>
+                                    <td>Interrupción</td>
+                                    <td>Reinicia conteo para fases posteriores</td>
+                                    <td>Art. 714 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Auto Inspección Tributaria de Oficio</td>
+                                    <td>Suspensión (para notificar RE)</td>
+                                    <td>3 meses (fijos)</td>
+                                    <td>Art. 706 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Inspección Tributaria a Solicitud del Contribuyente</td>
+                                    <td>Suspensión (para notificar RE)</td>
+                                    <td>Mientras dure la inspección</td>
+                                    <td>Art. 706 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Notificación Emplazamiento para Corregir</td>
+                                    <td>Suspensión (para notificar RE)</td>
+                                    <td>1 mes</td>
+                                    <td>Art. 706 E.T.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="card-4">
+            <div class="card-header" onclick="toggleCard('card-4')">
+                <h2>4. Plazos Procesales Clave (Post-Requerimiento Especial)</h2>
+                <span class="icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="sub-card">
+                    <h3>Respuesta Contribuyente al Requerimiento Especial (Art. 707 E.T.)</h3>
+                    <p>Plazo: <span class="highlight">3 meses</span>.</p>
+                </div>
+                <div class="sub-card">
+                    <h3>Ampliación al Requerimiento Especial (Art. 708 E.T.)</h3>
+                    <ul>
+                        <li>DIAN para ordenarla: <span class="highlight">3 meses</span> (desde vencimiento plazo respuesta RE).</li>
+                        <li>Contribuyente para responder ampliación: <span class="highlight">3-6 meses</span>.</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>Término Notificar Liquidación Oficial de Revisión (Art. 710 E.T.)</h3>
+                    <p>Plazo: <span class="highlight">6 meses</span> (desde vencimiento plazo respuesta RE o ampliación).</p>
+                    <ul>
+                        <li><strong>Suspensión</strong>:
+                            <ul>
+                                <li>Inspección de oficio: 3 meses.</li>
+                                <li>Inspección a solicitud: Duración de la inspección.</li>
+                                <li>Solicitud documentos no en expediente: 2 meses.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Principio de Correspondencia (Art. 711 E.T.)</strong>: Liquidación limitada a hechos del RE o ampliación.</li>
+                        <li><strong>Consecuencia No Notificación Oportuna</strong>: Firmeza de la declaración privada.</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>Recurso de Reconsideración contra Liquidación Oficial</h3>
+                    <ul>
+                        <li><strong>Interposición (Contribuyente, Art. 720 E.T.)</strong>: <span class="highlight">2 meses</span>.</li>
+                        <li><strong>Término para Resolver DIAN (Art. 732 E.T.)</strong>: <span class="highlight">1 año</span> (desde interposición).</li>
+                        <li><strong>Suspensión (Art. 733 E.T.)</strong>:
+                            <ul>
+                                <li>Inspección de oficio: Hasta 3 meses.</li>
+                                <li>Inspección a solicitud: Duración de la inspección.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Efectos No Resolución Oportuna (Art. 734 E.T.)</strong>: Silencio administrativo positivo / Nulidad acto extemporáneo.</li>
+                    </ul>
+                </div>
+                <div class="sub-card">
+                    <h3>Tabla Resumen Plazos Procesales Clave Post-RE</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Actuación</th>
+                                    <th>Plazo</th>
+                                    <th>Responsable</th>
+                                    <th>Referencia Legal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Respuesta al Requerimiento Especial</td>
+                                    <td>3 meses</td>
+                                    <td>Contribuyente</td>
+                                    <td>Art. 707 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Ordenar Ampliación al RE</td>
+                                    <td>3 meses (desde venc. resp. RE)</td>
+                                    <td>DIAN</td>
+                                    <td>Art. 708 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Respuesta a Ampliación del RE</td>
+                                    <td>3-6 meses</td>
+                                    <td>Contribuyente</td>
+                                    <td>Art. 708 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Notificar Liquidación Oficial de Revisión</td>
+                                    <td>6 meses (desde venc. resp. RE o ampl.)</td>
+                                    <td>DIAN</td>
+                                    <td>Art. 710 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Interponer Recurso de Reconsideración</td>
+                                    <td>2 meses (desde notif. Liq. Oficial)</td>
+                                    <td>Contribuyente</td>
+                                    <td>Art. 720 E.T.</td>
+                                </tr>
+                                <tr>
+                                    <td>Resolver Recurso de Reconsideración</td>
+                                    <td>1 año (desde interposición)</td>
+                                    <td>DIAN</td>
+                                    <td>Art. 732 E.T.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="card-5">
+            <div class="card-header" onclick="toggleCard('card-5')">
+                <h2>5. Hacia un "Algoritmo" para Determinar Vencimiento</h2>
+                <span class="icon">▼</span>
+            </div>
+            <div class="card-content">
+                <p class="mb-4 text-gray-700">No es una fórmula matemática simple, sino un sistema lógico o árbol de decisión.</p>
+                <div class="sub-card">
+                    <h3>Variables Clave (Inputs)</h3>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Fecha vencimiento plazo declarar.</li>
+                        <li>Fecha presentación declaración.</li>
+                        <li>Tipo de impuesto.</li>
+                        <li>Características declaración: Saldo a favor (con/sin solicitud dev.), pérdidas, precios transferencia, beneficio auditoría, corrección, aceptación liquidación provisional.</li>
+                        <li>Fechas notificación actuaciones DIAN (Emplazamiento, Auto Inspección, RE, Ampliación RE, Liquidación Oficial, Resolución Recurso).</li>
+                        <li>Fechas actuaciones contribuyente (Correcciones, Respuestas, Interposición Recurso).</li>
+                        <li><span class="highlight">CRÍTICO</span>: Precisión en las fechas de notificación.</li>
+                    </ul>
+                </div>
+
+                <div class="sub-card mt-6">
+                    <h3 class="mb-3">Marco de Árbol de Decisión Propuesto:</h3>
+                    <div class="decision-tree-node">
+                        <strong>Paso 1: Determinar Término Firmeza Base Aplicable</strong>
+                        <p class="text-sm text-gray-600 mt-1">Jerarquía: Liq. Prov. > Benef. Audit. > Pérdidas/Precios Transf. > Saldo a Favor con Solicitud > General. Considerar unificación IVA/Retefuente con Renta.</p>
+                    </div>
+                    <div class="connector">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                        </svg>
+                    </div>
+                    <div class="decision-tree-node">
+                        <strong>Paso 2: Verificar Interrupción por Notificación RE</strong>
+                        <p class="text-sm text-gray-600 mt-1">Considerar suspensiones del Art. 706 E.T.</p>
+                        <ul class="list-disc pl-5 text-sm mt-1">
+                            <li>Si NO notificado a tiempo: <span class="tag bg-green-100 text-green-700">FIRMEZA</span></li>
+                            <li>Si SÍ notificado a tiempo: Continuar.</li>
+                        </ul>
+                    </div>
+                     <div class="connector">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                        </svg>
+                    </div>
+                    <div class="decision-tree-node">
+                        <strong>Paso 3: Seguir Cadena Plazos Procesales Posteriores (Liquidación Oficial de Revisión)</strong>
+                        <p class="text-sm text-gray-600 mt-1">Considerar suspensiones del Art. 710 E.T.</p>
+                         <ul class="list-disc pl-5 text-sm mt-1">
+                            <li>Si NO notificada a tiempo: <span class="tag bg-green-100 text-green-700">FIRMEZA</span></li>
+                            <li>Si SÍ notificada a tiempo: Continuar si hay recurso.</li>
+                        </ul>
+                    </div>
+                     <div class="connector">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                        </svg>
+                    </div>
+                    <div class="decision-tree-node">
+                        <strong>Paso 4: Considerar Recurso de Reconsideración</strong>
+                        <p class="text-sm text-gray-600 mt-1">Considerar suspensiones del Art. 733 E.T.</p>
+                         <ul class="list-disc pl-5 text-sm mt-1">
+                            <li>Si NO resuelto y notificado a tiempo: Silencio Administrativo Positivo / Nulidad. Podría llevar a <span class="tag bg-green-100 text-green-700">FIRMEZA</span>.</li>
+                            <li>Si SÍ resuelto y notificado a tiempo: Estado final en vía gubernativa.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="card-6">
+            <div class="card-header" onclick="toggleCard('card-6')">
+                <h2>6. Conclusión: Viabilidad y Consideraciones Finales</h2>
+                <span class="icon">▼</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                    <li>Complejidad inherente pero <span class="highlight">estructurada</span>.</li>
+                    <li><span class="highlight">Factibilidad</span> de un algoritmo/sistema de reglas.</li>
+                    <li>Rol crítico de la <span class="highlight">documentación y fechas precisas</span>.</li>
+                    <li>Necesidad de <span class="highlight">actualización constante</span> (cambios legislativos y jurisprudenciales).</li>
+                    <li><strong>Múltiples puntos donde puede ocurrir el "vencimiento"</strong>:
+                        <ul class="list-circle pl-5 mt-1 space-y-1">
+                            <li>Firmeza original antes de actuación DIAN.</li>
+                            <li>No notificación RE a tiempo.</li>
+                            <li>No notificación Liquidación Oficial a tiempo.</li>
+                            <li>No resolución Recurso de Reconsideración a tiempo.</li>
+                        </ul>
+                    </li>
+                    <li>Un entendimiento claro beneficia a contribuyentes (planificación, defensa) y a la DIAN (validez de actuaciones).</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center mt-12 mb-6">
+        <p class="text-sm text-gray-500">Información basada en el mapa mental proporcionado. Consulte siempre la normativa vigente y asesórese con un profesional.</p>
+    </footer>
+
+    <script>
+        function toggleCard(cardId) {
+            const cardContent = document.querySelector(`#${cardId} .card-content`);
+            const icon = document.querySelector(`#${cardId} .icon`);
+            const isOpen = cardContent.classList.contains('open');
+
+            if (isOpen) {
+                cardContent.style.maxHeight = '0';
+                cardContent.classList.remove('open');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                // Temporarily set to auto to get the scrollHeight, then set it.
+                cardContent.style.maxHeight = 'none'; // Allow it to expand fully to measure
+                const scrollHeight = cardContent.scrollHeight + 40; // 40 for padding
+                cardContent.style.maxHeight = '0'; // Reset before animation
+                
+                // Force reflow/repaint
+                cardContent.offsetHeight; 
+
+                cardContent.style.maxHeight = scrollHeight + 'px';
+                cardContent.classList.add('open');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Optional: Automatically open the first card if not handled by CSS already
+        // window.addEventListener('DOMContentLoaded', () => {
+        //     const firstCardContent = document.querySelector('#card-1 .card-content');
+        //     const firstIcon = document.querySelector('#card-1 .icon');
+        //     if (firstCardContent && !firstCardContent.classList.contains('open')) {
+        //        firstCardContent.style.maxHeight = firstCardContent.scrollHeight + 40 + 'px';
+        //        firstCardContent.classList.add('open');
+        //        if(firstIcon) firstIcon.style.transform = 'rotate(180deg)';
+        //     }
+        // });
+    </script>
+</body>
+</html>
