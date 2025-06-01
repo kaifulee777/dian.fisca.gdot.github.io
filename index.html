@@ -1,546 +1,77 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAN Girardot - Portal de Auditores de Fiscalización</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5; /* Un gris claro para el fondo general */
-        }
-        .header-gradient {
-            background: linear-gradient(to right, #00529b, #00305c); /* Azul DIAN */
-        }
-        .section-title {
-            border-bottom: 3px solid #00529b; /* Azul DIAN */
-            padding-bottom: 8px;
-            display: inline-block;
-        }
-        .card {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            overflow: hidden; /* Para que el borde animado no se salga */
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-        }
-        .card-icon {
-            font-size: 2.5rem; /* 40px */
-            color: #00529b; /* Azul DIAN */
-            transition: color 0.3s ease;
-        }
-        .card:hover .card-icon {
-            color: #fdb913; /* Amarillo DIAN */
-        }
-        .interactive-list-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e5e7eb; /* gris claro */
-            transition: background-color 0.2s ease;
-            cursor: pointer;
-        }
-        .interactive-list-item:last-child {
-            border-bottom: none;
-        }
-        .interactive-list-item:hover {
-            background-color: #e9eff5; /* Un azul muy claro */
-        }
-        .interactive-list-item i {
-            margin-right: 10px;
-            color: #00529b; /* Azul DIAN */
-        }
-        .btn-primary {
-            background-color: #00529b; /* Azul DIAN */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-weight: 500;
-        }
-        .btn-primary:hover {
-            background-color: #00305c; /* Azul DIAN más oscuro */
-            transform: translateY(-2px);
-        }
-        .btn-secondary {
-            background-color: #fdb913; /* Amarillo DIAN */
-            color: #00305c; /* Azul DIAN oscuro para contraste */
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-weight: 500;
-        }
-        .btn-secondary:hover {
-            background-color: #e0a000; /* Amarillo DIAN más oscuro */
-            transform: translateY(-2px);
-        }
-        .search-bar {
-            position: relative;
-        }
-        .search-bar input {
-            padding-left: 2.5rem; /* Para el ícono */
-        }
-        .search-bar .fa-search {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9ca3af; /* gris */
-        }
-        /* Animación para la aparición de secciones */
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        /* Estilos para el menú desplegable (si se implementa con JS) */
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-        .dropdown-content a:hover {background-color: #f1f1f1}
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DIAN Girardot - Portal de Auditores</title>
+  <script src="https://cdn.tailwindcss.com"></script> 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-100">
 
-    <header class="header-gradient text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="https://placehold.co/150x40/ffffff/00529b?text=Logo+DIAN" alt="Logo DIAN" class="h-10 mr-3 rounded">
-                <h1 class="text-xl md:text-2xl font-bold">Portal Auditores - Fiscalización Girardot</h1>
-            </div>
-            <nav class="hidden md:flex space-x-4">
-                <a href="#documentacion" class="hover:text-yellow-300 transition duration-300">Documentación</a>
-                <a href="#normatividad" class="hover:text-yellow-300 transition duration-300">Normatividad</a>
-                <a href="#herramientas" class="hover:text-yellow-300 transition duration-300">Herramientas</a>
-                <a href="#soporte" class="hover:text-yellow-300 transition duration-300">Soporte</a>
-            </nav>
-            <button id="mobileMenuButton" class="md:hidden focus:outline-none">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
-        </div>
-        <div id="mobileMenu" class="hidden md:hidden bg-gray-800 text-center">
-            <a href="#documentacion" class="block py-2 px-4 text-sm hover:bg-gray-700">Documentación</a>
-            <a href="#normatividad" class="block py-2 px-4 text-sm hover:bg-gray-700">Normatividad</a>
-            <a href="#herramientas" class="block py-2 px-4 text-sm hover:bg-gray-700">Herramientas</a>
-            <a href="#soporte" class="block py-2 px-4 text-sm hover:bg-gray-700">Soporte</a>
-        </div>
-    </header>
+  <!-- Header -->
+  <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
+    <h1 class="text-xl font-bold text-gray-800">Portal de Auditores de Fiscalización</h1>
+    <a href="app_vencimientos.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">Ir a Calculadora de Vencimientos</a>
+  </header>
 
-    <section class="py-12 md:py-20 bg-white">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Bienvenido al Centro de Recursos para Auditores</h2>
-            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Encuentre aquí la documentación, normatividad vigente y herramientas esenciales para la gestión eficiente de expedientes tributarios.</p>
-            <div class="search-bar max-w-lg mx-auto mb-8">
-                <i class="fas fa-search"></i>
-                <input type="text" id="mainSearch" placeholder="Buscar en todo el portal..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
-            </div>
-            <div class="space-x-0 md:space-x-4 space-y-4 md:space-y-0">
-                <a href="#documentacion" class="btn-primary inline-block">
-                    <i class="fas fa-book mr-2"></i>Ver Documentación
-                </a>
-                <a href="#herramientas" class="btn-secondary inline-block">
-                    <i class="fas fa-tools mr-2"></i>Explorar Herramientas
-                </a>
-            </div>
-        </div>
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto p-6 pt-24 space-y-8">
+    <section class="bg-white p-6 rounded shadow-lg">
+      <h2 class="text-2xl font-semibold mb-4">Bienvenido al Portal de Auditores de Fiscalización</h2>
+      <p class="text-gray-600 mb-4">Este portal contiene información clave, formatos, normativa y herramientas útiles para la gestión eficiente de los procesos de fiscalización tributaria.</p>
+      <p class="text-gray-600">Explora las herramientas disponibles:</p>
     </section>
 
-    <section id="documentacion" class="py-12 md:py-16 fade-in-section">
-        <div class="container mx-auto px-6">
-            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center section-title">Documentación Esencial</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-file-alt card-icon mr-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-700">Guía de Procedimientos</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Manual detallado sobre los procedimientos de auditoría y fiscalización.</p>
-                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
-                            Leer más <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-folder-open card-icon mr-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-700">Formatos y Plantillas</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Acceso a todos los formatos actualizados para la gestión de expedientes.</p>
-                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
-                            Descargar <i class="fas fa-download ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-book-reader card-icon mr-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-700">Casos de Estudio</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Análisis de casos relevantes y mejores prácticas en auditoría.</p>
-                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
-                            Consultar <i class="fas fa-search-plus ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Card 1 -->
+      <div class="bg-white p-6 rounded shadow hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-calculator card-icon mr-4"></i>
+          <h3 class="text-xl font-semibold text-gray-700">Calculadora de Vencimientos</h3>
         </div>
-    </section>
+        <p class="text-gray-600 mb-4">Herramienta interactiva para calcular el vencimiento de un expediente tributario según las actuaciones realizadas por la DIAN y el contribuyente.</p>
+        <a href="app_vencimientos.html" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">Ir a la herramienta <i class="fas fa-arrow-right ml-2"></i></a>
+      </div>
 
-    <section id="normatividad" class="py-12 md:py-16 bg-white fade-in-section" style="animation-delay: 0.2s;">
-        <div class="container mx-auto px-6">
-            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center section-title">Normatividad Vigente</h2>
-            <div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg">
-                <ul id="normatividadList" class="divide-y divide-gray-200">
-                    <li class="interactive-list-item">
-                        <i class="fas fa-balance-scale"></i>
-                        <span>Estatuto Tributario Nacional - Actualizado 2025</span>
-                        <a href="#" class="float-right text-sm text-blue-500 hover:underline">Ver Documento</a>
-                    </li>
-                    <li class="interactive-list-item">
-                        <i class="fas fa-gavel"></i>
-                        <span>Decreto Reglamentario 1625 de 2016 (Único Reglamentario en Materia Tributaria)</span>
-                        <a href="#" class="float-right text-sm text-blue-500 hover:underline">Ver Documento</a>
-                    </li>
-                    <li class="interactive-list-item">
-                        <i class="fas fa-file-contract"></i>
-                        <span>Resoluciones DIAN Recientes (Fiscalización)</span>
-                        <a href="#" class="float-right text-sm text-blue-500 hover:underline">Ver Documentos</a>
-                    </li>
-                    <li class="interactive-list-item">
-                        <i class="fas fa-landmark"></i>
-                        <span>Conceptos Unificados DIAN</span>
-                        <a href="#" class="float-right text-sm text-blue-500 hover:underline">Consultar Base</a>
-                    </li>
-                </ul>
-            </div>
-             <div class="text-center mt-8">
-                <button id="addNormaButton" class="btn-primary">
-                    <i class="fas fa-plus-circle mr-2"></i>Sugerir Nueva Norma
-                </button>
-            </div>
+      <!-- Card 2 -->
+      <div class="bg-white p-6 rounded shadow hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-book-reader card-icon mr-4"></i>
+          <h3 class="text-xl font-semibold text-gray-700">Casos de Estudio</h3>
         </div>
-    </section>
+        <p class="text-gray-600 mb-4">Análisis de casos reales y mejores prácticas en auditoría tributaria.</p>
+        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">Leer más <i class="fas fa-arrow-right ml-2"></i></a> 
+      </div>
 
-    <section id="herramientas" class="py-12 md:py-16 fade-in-section" style="animation-delay: 0.4s;">
-        <div class="container mx-auto px-6">
-            <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center section-title">Herramientas y Aplicativos</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card">
-                    <div class="p-6 text-center">
-                        <i class="fas fa-calculator card-icon mb-4"></i>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Calculadora de Sanciones</h3>
-                        <p class="text-gray-600 mb-4">Estime sanciones por extemporaneidad, corrección, etc.</p>
-                        <a href="#" class="btn-secondary inline-block w-full text-center">Acceder</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="p-6 text-center">
-                        <i class="fas fa-calendar-alt card-icon mb-4"></i>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Calendario Tributario</h3>
-                        <p class="text-gray-600 mb-4">Fechas clave y vencimientos importantes.</p>
-                        <a href="#" class="btn-secondary inline-block w-full text-center">Consultar</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="p-6 text-center">
-                        <i class="fas fa-search-dollar card-icon mb-4"></i>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Validador RUT</h3>
-                        <p class="text-gray-600 mb-4">Verifique la validez y estado de un RUT.</p>
-                        <a href="#" class="btn-secondary inline-block w-full text-center">Utilizar</a>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-8">
-                 <button id="addToolButton" class="btn-primary">
-                    <i class="fas fa-tools mr-2"></i>Proponer Nueva Herramienta
-                </button>
-            </div>
+      <!-- Card 3 -->
+      <div class="bg-white p-6 rounded shadow hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-file-alt card-icon mr-4"></i>
+          <h3 class="text-xl font-semibold text-gray-700">Formatos Actualizados</h3>
         </div>
-    </section>
+        <p class="text-gray-600 mb-4">Acceso a todos los formatos oficiales y actualizados para la gestión de expedientes fiscales.</p>
+        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">Descargar <i class="fas fa-download ml-2"></i></a>
+      </div>
 
-    <section id="soporte" class="py-12 md:py-16 bg-white fade-in-section" style="animation-delay: 0.6s;">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-2xl md:text-3xl font-bold mb-4 section-title">Soporte y Contacto</h2>
-            <p class="text-lg text-gray-600 mb-6">¿Necesita ayuda o tiene alguna consulta?</p>
-            <div class="max-w-md mx-auto bg-gray-50 p-8 rounded-lg shadow-lg">
-                <h3 class="text-xl font-semibold text-gray-700 mb-3">Mesa de Ayuda Interna</h3>
-                <p class="text-gray-600 mb-1"><i class="fas fa-phone-alt mr-2 text-blue-600"></i>Extensión: 1234, 1235</p>
-                <p class="text-gray-600 mb-4"><i class="fas fa-envelope mr-2 text-blue-600"></i>Email: soporte.fiscalizacion.girardot@dian.gov.co</p>
-                <a href="#" class="btn-primary inline-block"><i class="fas fa-question-circle mr-2"></i>Preguntas Frecuentes</a>
-            </div>
+      <!-- Card 4 -->
+      <div class="bg-white p-6 rounded shadow hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-gavel card-icon mr-4"></i>
+          <h3 class="text-xl font-semibold text-gray-700">Normativa Aplicable</h3>
         </div>
-    </section>
-
-    <footer class="header-gradient text-white py-8 text-center">
-        <div class="container mx-auto px-6">
-            <img src="https://placehold.co/100x30/ffffff/00529b?text=DIAN" alt="DIAN" class="h-8 mx-auto mb-4 rounded">
-            <p class="text-sm">&copy; <span id="currentYear"></span> Dirección de Impuestos y Aduanas Nacionales de Colombia.</p>
-            <p class="text-xs mt-1">Portal de Auditores de Fiscalización - Seccional Girardot. Todos los derechos reservados.</p>
-            <div class="mt-4">
-                <a href="https://www.dian.gov.co" target="_blank" class="text-yellow-300 hover:text-yellow-500 mx-2">Sitio Oficial DIAN</a>
-                <span class="text-gray-400">|</span>
-                <a href="#" class="text-yellow-300 hover:text-yellow-500 mx-2">Intranet</a>
-            </div>
-        </div>
-    </footer>
-
-    <div id="normaModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center hidden z-50">
-        <div class="relative mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
-            <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Sugerir Nueva Norma/Documento</h3>
-                <form id="normaForm">
-                    <div class="mb-4 text-left">
-                        <label for="normaTitulo" class="block text-sm font-medium text-gray-700">Título de la Norma/Documento:</label>
-                        <input type="text" name="normaTitulo" id="normaTitulo" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                    </div>
-                    <div class="mb-4 text-left">
-                        <label for="normaDescripcion" class="block text-sm font-medium text-gray-700">Descripción Breve (opcional):</label>
-                        <textarea name="normaDescripcion" id="normaDescripcion" rows="3" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
-                    </div>
-                    <div class="mb-4 text-left">
-                        <label for="normaEnlace" class="block text-sm font-medium text-gray-700">Enlace (si aplica):</label>
-                        <input type="url" name="normaEnlace" id="normaEnlace" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="https://ejemplo.com/documento.pdf">
-                    </div>
-                    <div class="items-center gap-4 py-3">
-                        <button id="closeNormaModal" type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 mr-2">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="px-4 py-2 btn-primary text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            Enviar Sugerencia
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <p class="text-gray-600 mb-4">Acceso rápido a los artículos clave del Estatuto Tributario y otras normativas relevantes.</p>
+        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">Ver normas <i class="fas fa-arrow-right ml-2"></i></a>
+      </div>
     </div>
-    
-    <div id="toolModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center hidden z-50">
-        <div class="relative mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
-            <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Proponer Nueva Herramienta/Aplicativo</h3>
-                <form id="toolForm">
-                    <div class="mb-4 text-left">
-                        <label for="toolNombre" class="block text-sm font-medium text-gray-700">Nombre de la Herramienta:</label>
-                        <input type="text" name="toolNombre" id="toolNombre" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                    </div>
-                    <div class="mb-4 text-left">
-                        <label for="toolDescripcion" class="block text-sm font-medium text-gray-700">Descripción y Funcionalidad:</label>
-                        <textarea name="toolDescripcion" id="toolDescripcion" rows="3" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></textarea>
-                    </div>
-                     <div class="mb-4 text-left">
-                        <label for="toolTipo" class="block text-sm font-medium text-gray-700">Tipo de Herramienta:</label>
-                        <select name="toolTipo" id="toolTipo" class="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                            <option value="calculadora">Calculadora</option>
-                            <option value="validador">Validador</option>
-                            <option value="consulta">Sistema de Consulta</option>
-                            <option value="aplicativo">Aplicativo Externo/Interno</option>
-                            <option value="otro">Otro</option>
-                        </select>
-                    </div>
-                    <div class="items-center gap-4 py-3">
-                        <button id="closeToolModal" type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 mr-2">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="px-4 py-2 btn-primary text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            Enviar Propuesta
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+  </main>
 
-    <div id="notificationToast" class="fixed bottom-5 right-5 bg-green-500 text-white py-3 px-5 rounded-lg shadow-xl hidden transition-opacity duration-300">
-        <p id="toastMessage">¡Acción completada!</p>
-    </div>
+  <!-- Footer -->
+  <footer class="mt-12 text-center text-sm text-gray-500 pb-6">
+    &copy; 2025 DIAN Girardot - Todos los derechos reservados
+  </footer>
 
-
-    <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobileMenuButton');
-        const mobileMenu = document.getElementById('mobileMenu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Set current year in footer
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-                // Close mobile menu if open after click
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('hidden');
-                }
-            });
-        });
-
-        // Fade-in sections on scroll (simple version)
-        const fadeInSections = document.querySelectorAll('.fade-in-section');
-        const observerOptions = {
-            root: null, // relative to document viewport
-            rootMargin: '0px',
-            threshold: 0.1 // 10% of item visible
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationPlayState = 'running';
-                    observer.unobserve(entry.target); // Optional: stop observing once animated
-                }
-            });
-        }, observerOptions);
-
-        fadeInSections.forEach(section => {
-            section.style.animationPlayState = 'paused'; // Ensure animation doesn't run on load
-            observer.observe(section);
-        });
-
-        // Modal functionality
-        const normaModal = document.getElementById('normaModal');
-        const toolModal = document.getElementById('toolModal');
-        const addNormaButton = document.getElementById('addNormaButton');
-        const closeNormaModal = document.getElementById('closeNormaModal');
-        const normaForm = document.getElementById('normaForm');
-        
-        const addToolButton = document.getElementById('addToolButton');
-        const closeToolModal = document.getElementById('closeToolModal');
-        const toolForm = document.getElementById('toolForm');
-
-        const notificationToast = document.getElementById('notificationToast');
-        const toastMessage = document.getElementById('toastMessage');
-
-        function showToast(message) {
-            toastMessage.textContent = message;
-            notificationToast.classList.remove('hidden');
-            notificationToast.classList.add('opacity-100');
-            setTimeout(() => {
-                notificationToast.classList.remove('opacity-100');
-                notificationToast.classList.add('hidden');
-            }, 3000);
-        }
-
-        if (addNormaButton) {
-            addNormaButton.addEventListener('click', () => normaModal.classList.remove('hidden'));
-        }
-        if (closeNormaModal) {
-            closeNormaModal.addEventListener('click', () => normaModal.classList.add('hidden'));
-        }
-        if (normaForm) {
-            normaForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                // Aquí iría la lógica para enviar los datos del formulario
-                console.log('Sugerencia de norma enviada:', {
-                    titulo: normaForm.normaTitulo.value,
-                    descripcion: normaForm.normaDescripcion.value,
-                    enlace: normaForm.normaEnlace.value
-                });
-                normaModal.classList.add('hidden');
-                normaForm.reset();
-                showToast('¡Sugerencia de norma enviada con éxito!');
-            });
-        }
-
-        if (addToolButton) {
-            addToolButton.addEventListener('click', () => toolModal.classList.remove('hidden'));
-        }
-        if (closeToolModal) {
-            closeToolModal.addEventListener('click', () => toolModal.classList.add('hidden'));
-        }
-        if (toolForm) {
-            toolForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                // Aquí iría la lógica para enviar los datos del formulario
-                console.log('Propuesta de herramienta enviada:', {
-                    nombre: toolForm.toolNombre.value,
-                    descripcion: toolForm.toolDescripcion.value,
-                    tipo: toolForm.toolTipo.value
-                });
-                toolModal.classList.add('hidden');
-                toolForm.reset();
-                showToast('¡Propuesta de herramienta enviada con éxito!');
-            });
-        }
-        
-        // Cerrar modal al hacer clic fuera de él
-        window.addEventListener('click', (event) => {
-            if (event.target === normaModal) {
-                normaModal.classList.add('hidden');
-            }
-            if (event.target === toolModal) {
-                toolModal.classList.add('hidden');
-            }
-        });
-
-        // Búsqueda simple (simulada, solo para demostración)
-        const mainSearch = document.getElementById('mainSearch');
-        if (mainSearch) {
-            mainSearch.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    const searchTerm = e.target.value;
-                    if (searchTerm.trim() !== '') {
-                        // Simular una búsqueda
-                        showToast(`Buscando "${searchTerm}"... (Funcionalidad de búsqueda real no implementada)`);
-                        // Aquí se implementaría la lógica de búsqueda real,
-                        // por ejemplo, filtrando contenido o redirigiendo a una página de resultados.
-                    }
-                }
-            });
-        }
-
-        // Interactividad en la lista de normatividad (ejemplo)
-        const normatividadListItems = document.querySelectorAll('#normatividadList .interactive-list-item');
-        normatividadListItems.forEach(item => {
-            item.addEventListener('click', function(event) {
-                // Evitar que el click en el enlace "Ver Documento" active esta alerta
-                if (event.target.tagName.toLowerCase() !== 'a') {
-                    const normaText = this.querySelector('span').textContent;
-                    console.log(`Elemento de normatividad clickeado: ${normaText}`);
-                    // Aquí podrías, por ejemplo, mostrar más detalles en un modal o panel lateral.
-                    // showToast(`Has hecho clic en: ${normaText.substring(0,30)}...`);
-                }
-            });
-        });
-
-    </script>
 </body>
 </html>
-
