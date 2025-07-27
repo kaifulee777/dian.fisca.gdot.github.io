@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Metas Aduaneras - DIAN Seccional Girardot</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos personalizados para complementar Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .dian-blue { color: #0033A0; }
+        .dian-gold { color: #D2A100; }
+        .bg-dian-blue { background-color: #0033A0; }
+        .bg-dian-gold { background-color: #D2A100; }
+        .border-dian-blue { border-color: #0033A0; }
+        
+        .kpi-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Encabezado -->
+    <header class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold dian-blue">Dashboard de Gestión Aduanera</h1>
+        <h2 class="text-xl md:text-2xl font-semibold text-gray-600">DIAN Seccional Girardot - Resultados a Julio 2025</h2>
+    </header>
+
+    <!-- Contenedor Principal del Dashboard -->
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Tarjetas de KPIs Principales -->
+        <div class="kpi-card col-span-1 md:col-span-2 lg:col-span-1 bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+            <h3 class="text-gray-500 font-semibold">Cumplimiento Meta Mensual</h3>
+            <p class="text-4xl font-bold text-green-600 mt-2">149%</p>
+            <p class="text-gray-400 text-sm mt-1">Logro: $12.212.816 / Meta: $8.213.333</p>
+        </div>
+
+        <div class="kpi-card col-span-1 md:col-span-2 lg:col-span-1 bg-white p-6 rounded-lg shadow-md border-l-4 border-dian-gold">
+            <h3 class="text-gray-500 font-semibold">Progreso Meta Acumulada</h3>
+            <p class="text-4xl font-bold dian-gold mt-2">68.8%</p>
+            <p class="text-gray-400 text-sm mt-1">Logro: $56.528.507 / Meta: $82.133.333</p>
+        </div>
+
+        <div class="kpi-card col-span-1 md:col-span-2 lg:col-span-1 bg-white p-6 rounded-lg shadow-md border-l-4 border-dian-blue">
+            <h3 class="text-gray-500 font-semibold">Avance Meta Anual</h3>
+            <p class="text-4xl font-bold dian-blue mt-2">45.9%</p>
+            <p class="text-gray-400 text-sm mt-1">Logro: $56.528.507 / Meta: $123.200.000</p>
+        </div>
+
+        <div class="kpi-card col-span-1 md:col-span-2 lg:col-span-1 bg-white p-6 rounded-lg shadow-md border-l-4 border-gray-400">
+            <h3 class="text-gray-500 font-semibold">Aprehensiones (Julio)</h3>
+            <p class="text-4xl font-bold text-gray-700 mt-2">2</p>
+            <p class="text-gray-400 text-sm mt-1">Valor total: $12.212.816</p>
+        </div>
+
+        <!-- Gráfico de Evolución Acumulada -->
+        <div class="col-span-1 md:col-span-2 lg:col-span-4 bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold dian-blue mb-4">Evolución del Logro vs. Meta Acumulada 2025</h3>
+            <!-- Contenedor con altura definida para el gráfico -->
+            <div class="relative h-72 md:h-80">
+                <canvas id="cumulativeChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-400 text-center mt-2">* Datos de Ene-Jun son ilustrativos para mostrar la tendencia y el impacto del resultado de Julio.</p>
+        </div>
+        
+        <!-- Gráfico de Gauge y Gráfico de Barras Mensual -->
+        <div class="col-span-1 md:col-span-2 lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold dian-blue mb-4">Progreso Hacia la Meta Anual</h3>
+            <canvas id="annualGoalGauge"></canvas>
+        </div>
+
+        <div class="col-span-1 md:col-span-2 lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold dian-blue mb-4">Resultado vs Meta del Mes de Julio</h3>
+            <canvas id="monthlyBarChart"></canvas>
+        </div>
+
+        <!-- Sección de Insights -->
+        <div class="col-span-1 md:col-span-2 lg:col-span-4 bg-white p-6 rounded-lg shadow-md border-t-4 border-dian-blue">
+            <h3 class="text-lg font-bold dian-blue mb-4">Puntos Clave e Insights Estratégicos</h3>
+            <ul class="space-y-4">
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-4">🚀</div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">Desempeño Mensual Excepcional</h4>
+                        <p class="text-gray-600">Julio fue un mes sobresaliente, superando la meta en un <span class="font-bold">49%</span>. Este resultado es el principal motor del avance en los indicadores anuales y demuestra una alta efectividad operativa.</p>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 h-6 w-6 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mr-4">📈</div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">Aceleración en la Meta Acumulada</h4>
+                        <p class="text-gray-600">El éxito de julio redujo significativamente la brecha con la meta acumulada, llevándola al <span class="font-bold">68.8%</span>. Esto indica una recuperación y aceleración crucial de cara a la segunda mitad del año.</p>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-4">🎯</div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">El Reto de la Meta Anual</h4>
+                        <p class="text-gray-600">Se ha alcanzado el <span class="font-bold">45.9%</span> de la meta anual. Para lograr el 100%, es necesario mantener un ritmo de recaudo promedio superior a <span class="font-bold">$13.3 millones</span> durante los cinco meses restantes, un objetivo ambicioso pero alcanzable si se replica el éxito de julio.</p>
+                    </div>
+                </li>
+                 <li class="flex items-start">
+                    <div class="flex-shrink-0 h-6 w-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center mr-4">💡</div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">Acción Recomendada</h4>
+                        <p class="text-gray-600">Es fundamental analizar en detalle las <span class="font-bold">2 aprehensiones clave</span> de julio. Identificar las tácticas, perfiles de riesgo o tipos de mercancía involucrados permitirá replicar estas estrategias y potenciar los resultados futuros.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        // --- Datos del Dashboard ---
+        const metaAnual = 123200000;
+        const logroTotal = 56528507;
+        const metaMensual = 8213333;
+        const logroMensual = 12212816;
+        const metaAcumuladaJulio = 82133333;
+
+        // --- Función para formatear a moneda (COP) ---
+        const formatCurrency = (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
+
+        // --- 1. Gráfico de Evolución Acumulada (Line Chart) ---
+        const ctxCumulative = document.getElementById('cumulativeChart').getContext('2d');
+        // Datos ilustrativos para Ene-Jun
+        const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'];
+        const metaAcumuladaData = [11733333, 23466666, 35200000, 46933333, 58666666, 70400000, metaAcumuladaJulio];
+        const logroAcumuladoData = [8000000, 15000000, 22000000, 29000000, 36000000, 44315691, logroTotal];
+
+        new Chart(ctxCumulative, {
+            type: 'line',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Logro Acumulado',
+                    data: logroAcumuladoData,
+                    borderColor: '#0033A0',
+                    backgroundColor: 'rgba(0, 51, 160, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }, {
+                    label: 'Meta Acumulada',
+                    data: metaAcumuladaData,
+                    borderColor: '#D2A100',
+                    backgroundColor: 'transparent',
+                    borderDash: [5, 5],
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: (value) => `${(value / 1000000).toFixed(0)}M`
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: ${formatCurrency(context.raw)}`
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- 2. Gráfico de Gauge para Meta Anual (Doughnut Chart) ---
+        const ctxGauge = document.getElementById('annualGoalGauge').getContext('2d');
+        const percentAnual = (logroTotal / metaAnual) * 100;
+        new Chart(ctxGauge, {
+            type: 'doughnut',
+            data: {
+                labels: ['Alcanzado', 'Faltante'],
+                datasets: [{
+                    data: [percentAnual, 100 - percentAnual],
+                    backgroundColor: ['#0033A0', '#e5e7eb'],
+                    borderColor: ['#fff'],
+                    borderWidth: 2,
+                    circumference: 180,
+                    rotation: 270,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false },
+                    title: {
+                        display: true,
+                        text: `${percentAnual.toFixed(1)}%`,
+                        position: 'bottom',
+                        align: 'center',
+                        font: { size: 36, weight: 'bold' },
+                        color: '#0033A0',
+                        padding: { top: -40 }
+                    },
+                     subtitle: {
+                        display: true,
+                        text: formatCurrency(logroTotal),
+                        position: 'bottom',
+                        align: 'center',
+                        font: { size: 14 },
+                        color: '#6b7280',
+                        padding: { top: -60 }
+                    }
+                }
+            }
+        });
+
+        // --- 3. Gráfico de Barras Mensual ---
+        const ctxBar = document.getElementById('monthlyBarChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Resultado de Julio'],
+                datasets: [{
+                    label: 'Logro',
+                    data: [logroMensual],
+                    backgroundColor: '#22c55e', // green-500
+                    borderColor: '#16a34a', // green-600
+                    borderWidth: 1
+                }, {
+                    label: 'Meta',
+                    data: [metaMensual],
+                    backgroundColor: '#9ca3af', // gray-400
+                    borderColor: '#6b7280', // gray-500
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        ticks: {
+                            callback: (value) => `${(value / 1000000).toFixed(1)}M`
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: ${formatCurrency(context.raw)}`
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
