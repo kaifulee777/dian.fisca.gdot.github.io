@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -88,6 +88,33 @@
             <p class="text-xs text-gray-400 text-center mt-2">* Datos de Ene-Jun son ilustrativos para mostrar la tendencia y el impacto del resultado de Julio.</p>
         </div>
         
+        <!-- NUEVO MODULO: Distribución de la Carga -->
+        <div class="col-span-1 sm:col-span-2 lg:col-span-6 bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold dian-blue mb-4">Distribución de la Carga - Estado Actual de Expedientes 2025</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="md:col-span-1 h-64">
+                     <canvas id="distributionChart"></canvas>
+                </div>
+                <div class="md:col-span-2 space-y-4">
+                    <div class="p-4 rounded-lg bg-green-50 border-l-4 border-green-500">
+                        <p class="font-bold text-green-800">En Firme por Términos (15 Días)</p>
+                        <p class="text-2xl font-bold text-green-700">$56.528.507 <span class="text-lg font-semibold text-green-600">(74.9%)</span></p>
+                        <p class="text-sm text-gray-600">14 Aprehensiones</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-yellow-50 border-l-4 border-yellow-500">
+                        <p class="font-bold text-yellow-800">Sin Definir con Recurso Interpuesto</p>
+                        <p class="text-2xl font-bold text-yellow-700">$9.940.177 <span class="text-lg font-semibold text-yellow-600">(13.2%)</span></p>
+                        <p class="text-sm text-gray-600">3 Aprehensiones</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-orange-50 border-l-4 border-orange-500">
+                        <p class="font-bold text-orange-800">En espera de Recurso o de Firmeza</p>
+                        <p class="text-2xl font-bold text-orange-700">$8.992.710 <span class="text-lg font-semibold text-orange-600">(11.9%)</span></p>
+                        <p class="text-sm text-gray-600">3 Aprehensiones</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Gráfico de Gauge y Gráfico de Barras Mensual -->
         <div class="col-span-1 sm:col-span-2 lg:col-span-3 bg-white p-6 rounded-lg shadow-md">
             <h3 class="text-lg font-bold dian-blue mb-4">Progreso Hacia la Meta Anual</h3>
@@ -151,7 +178,6 @@
 
         // --- 1. Gráfico de Evolución Acumulada (Line Chart) ---
         const ctxCumulative = document.getElementById('cumulativeChart').getContext('2d');
-        // Datos ilustrativos para Ene-Jun
         const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'];
         const metaAcumuladaData = [11733333, 23466666, 35200000, 46933333, 58666666, 70400000, metaAcumuladaJulio];
         const logroAcumuladoData = [8000000, 15000000, 22000000, 29000000, 36000000, 44315691, logroTotal];
@@ -179,24 +205,59 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        ticks: {
-                            callback: (value) => `${(value / 1000000).toFixed(0)}M`
-                        }
-                    }
-                },
+                scales: { y: { ticks: { callback: (value) => `${(value / 1000000).toFixed(0)}M` } } },
+                plugins: { tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${formatCurrency(context.raw)}` } } }
+            }
+        });
+
+        // --- 2. Gráfico Distribución de la Carga (Doughnut Chart) ---
+        const ctxDistribution = document.getElementById('distributionChart').getContext('2d');
+        const distributionData = {
+            labels: ['En Firme', 'Sin Definir c/ Recurso', 'En Espera'],
+            datasets: [{
+                data: [56528507, 9940177, 8992710],
+                backgroundColor: ['#16a34a', '#f59e0b', '#f97316'], // green-600, amber-500, orange-500
+                borderColor: '#f1f5f9', // slate-100
+                borderWidth: 4,
+            }]
+        };
+        new Chart(ctxDistribution, {
+            type: 'doughnut',
+            data: distributionData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
                 plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            boxWidth: 12,
+                            font: { size: 12 }
+                        }
+                    },
                     tooltip: {
                         callbacks: {
-                            label: (context) => `${context.dataset.label}: ${formatCurrency(context.raw)}`
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    label += `${formatCurrency(context.parsed)} (${percentage}%)`;
+                                }
+                                return label;
+                            }
                         }
                     }
                 }
             }
         });
 
-        // --- 2. Gráfico de Gauge para Meta Anual (Doughnut Chart) ---
+        // --- 3. Gráfico de Gauge para Meta Anual (Doughnut Chart) ---
         const ctxGauge = document.getElementById('annualGoalGauge').getContext('2d');
         const percentAnual = (logroTotal / metaAnual) * 100;
         new Chart(ctxGauge, {
@@ -242,7 +303,7 @@
             }
         });
 
-        // --- 3. Gráfico de Barras Mensual ---
+        // --- 4. Gráfico de Barras Mensual ---
         const ctxBar = document.getElementById('monthlyBarChart').getContext('2d');
         new Chart(ctxBar, {
             type: 'bar',
@@ -266,22 +327,10 @@
                 responsive: true,
                 maintainAspectRatio: true,
                 indexAxis: 'y',
-                scales: {
-                    x: {
-                        ticks: {
-                            callback: (value) => `${(value / 1000000).toFixed(1)}M`
-                        }
-                    }
-                },
+                scales: { x: { ticks: { callback: (value) => `${(value / 1000000).toFixed(1)}M` } } },
                 plugins: {
-                    legend: {
-                        position: 'bottom'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: (context) => `${context.dataset.label}: ${formatCurrency(context.raw)}`
-                        }
-                    }
+                    legend: { position: 'bottom' },
+                    tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${formatCurrency(context.raw)}` } }
                 }
             }
         });
